@@ -1,7 +1,9 @@
 import Sidebar from './sidebar'
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Navigate } from 'react-router-dom'
 import Navbar from './navbar'
+import { useInstructor } from '@/context/InstructorContext'
+import { useStudent } from '@/context/StudentContext'
 const Layout = () => {
   return (
     <div className='h-full'>

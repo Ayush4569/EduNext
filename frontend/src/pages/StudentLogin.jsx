@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -10,8 +10,12 @@ import {
   FormControl,
   FormMessage,
 } from "../components/ui/form";
+import axios from "axios";
+import { useNavigate,Link } from "react-router-dom";
+import { useStudent } from "@/context/StudentContext";
+import toast from "react-hot-toast";
 
-function Login() {
+function StudentLogin() {
   const form = useForm({
     defaultValues: {
       email: "",
@@ -19,8 +23,27 @@ function Login() {
     },
   });
 
-  const onSubmit = (data) => {
+  const navigate = useNavigate()
+  const {setStudent} = useStudent()
 
+  const onSubmit = async(data) => {
+
+    console.log("Form Data:", data);
+    const apiEndpoint =`${import.meta.env.VITE_BASEURL}/students/login`
+    try {
+
+      const response = await axios.post(apiEndpoint,data)
+      if(response.statusText === 'OK'){
+          setStudent(response.data)
+          navigate('/')
+     
+     
+        toast.success("Login successfull")
+      }
+     } catch (error) {
+      console.log('login error',error);
+      toast.error(error?.response?.data?.message || error.message)
+     }
     console.log("Form Data:", data);
   };
   return (
@@ -82,10 +105,13 @@ function Login() {
           </Button>
         </form>
       </Form>
+      <div className="mt-6">
+        <Link to='/teacher/login' className="text-lg text-red-600 underline">Login as Instructor </Link>
+      </div>
     </div>
     </div>
    
   );
 }
 
-export default Login;
+export default StudentLogin;

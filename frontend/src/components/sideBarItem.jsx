@@ -7,7 +7,7 @@ const SideBarItem = ({ icon:Icon, label, href }) => {
   const navigate = useNavigate()
 
   
-  const isActive = location.pathname === href 
+  const isActive = location.pathname === href || location.pathname.includes(href)
   return (
     <button
        onClick={()=>navigate(href)}

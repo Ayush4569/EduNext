@@ -11,7 +11,7 @@ import {
   FormMessage,
   FormDescription,
 } from "../components/ui/form";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {toast} from "react-hot-toast"
 import axios from 'axios';
 const CreateCourses = () => {
@@ -21,16 +21,18 @@ const CreateCourses = () => {
         }
     })
     const {isValid,isSubmitting,isValidating} = form.formState
+    const navigate = useNavigate()
     const submitHandler = async(data)=>{
        try {
-        const res = await axios.post('/api/courses/create',data)
+        const res = await axios.post(`${import.meta.env.VITE_BASEURL}/courses/create`,data,{withCredentials:true})
         console.log(res.data);
+        if(res.statusText == 'OK'){
+           navigate(`/teacher/courses/${res.data._id}`)
+           toast.success("Course created")
+        }
        } catch (error) {
         console.log('error',error);
-        toast.error(error.message)
-       }
-       finally{
-        
+        toast.error(error?.response?.data?.message || error.message)
        }
     }
   return (

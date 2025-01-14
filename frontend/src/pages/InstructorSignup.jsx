@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -10,11 +10,18 @@ import {
   FormControl,
   FormMessage,
 } from "../components/ui/form";
+import axios from "axios";
+import { useNavigate,Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useInstructor } from "@/context/InstructorContext";
 
-function Signup() {
+function InstructorSignup() {
   const form = useForm({
     defaultValues: {
-      fullname: "",
+      fullname: {
+        firstname:"",
+        lastname:"",
+      },
       email: "",
       password: "",
       contact:"",
@@ -22,10 +29,30 @@ function Signup() {
     },
   });
 
-  const onSubmit = (data) => {
+  const navigate = useNavigate()
+ const {setInstructor} = useInstructor()
+ const onSubmit = async (data) => {
+  console.log("Form Data:", data);
 
-    console.log("Form Data:", data);
-  };
+  const apiEndpoint = `${import.meta.env.VITE_BASEURL}/instructors/register`;
+
+  try {
+    const response = await axios.post(apiEndpoint, data);
+
+    if (response.status === 201) {
+        setInstructor(response.data);
+        navigate("/teacher/login");
+      toast.success("Instructor registered successfully");
+    }
+  } catch (error) {
+    console.error("Signup Error:", error);
+
+    const errorMessage =
+      error.response?.data?.message || "An unexpected error occurred";
+    toast.error(errorMessage);
+  }
+};
+
   return (
     <div className="h-screen w-screen flex items-center justify-center">
        <div className=" p-8 w-[32%] mx-auto bg-gray-50 rounded-lg h-auto shadow-xl ">
@@ -35,15 +62,28 @@ function Signup() {
           {/* Username Field */}
           <FormField
             control={form.control}
-            name="fullname"
-            rules={{ required: "Fullname is required" }}
+            name="fullname.firstname"
+            rules={{ required: "Firstname is required" }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-lg'>Fullname</FormLabel>
+                <FormLabel className='text-lg'>Firstname</FormLabel>
                 <FormControl>
-                  <Input className='p-6 placeholder:text-base' placeholder="Enter your fullname" {...field} />
+                  <Input className='p-6 placeholder:text-base' placeholder="Enter your firstname" {...field} />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Username Field */}
+          <FormField
+            control={form.control}
+            name="fullname.lastname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className='text-lg'>Lastname</FormLabel>
+                <FormControl>
+                  <Input className='p-6 placeholder:text-base' placeholder="Enter your lastname" {...field} />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -121,25 +161,7 @@ function Signup() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="role"
-            rules={{
-              required: "Role is required",
-            }}
-            render={({ field }) => {
-              return(
-              <FormItem className='flex gap-4 items-center'>
-                <FormLabel className='text-lg'>Select your role</FormLabel>
-                 <select {...field} className="p-2 border border-black rounded-lg">
-                  <option value="" disabled>Role</option>
-                  <option value="Student">Student</option>
-                  <option value="Instructor">Instructor</option>
-                 </select>
-                <FormMessage />
-              </FormItem>
-            )}}
-          />
+
 
           {/* Submit Button */}
           <Button type="submit" className="w-full bg-blue-600 text-lg text-white p-6">
@@ -147,10 +169,13 @@ function Signup() {
           </Button>
         </form>
       </Form>
+      <div>
+        <h2 className="text-lg">Already have an accoun't ? <Link className="text-blue-800" to='/teacher/login'>Login</Link></h2>
+      </div>
     </div>
     </div>
    
   );
 }
 
-export default Signup;
+export default InstructorSignup;

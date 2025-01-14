@@ -2,9 +2,13 @@ import React from 'react'
 import SideBarItem from './sideBarItem'
 import { Layout,Compass, List, BarChart2 } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useInstructor } from '@/context/InstructorContext'
+import { useStudent } from '@/context/StudentContext'
 
 const SidebarRoutes = () => {
   const {pathname} = useLocation()
+  const {instructor} = useInstructor()
+  const {student} = useStudent()
     const guestRoutes = [
         {
             icon:Layout,
@@ -30,11 +34,13 @@ const SidebarRoutes = () => {
         },
     ]
 
-    const routes = pathname?.startsWith('/teacher') ? teacherRoutes : guestRoutes
+    // const routes = pathname?.startsWith('/teacher') ? teacherRoutes : guestRoutes
+    const routes = instructor ? teacherRoutes : student ? guestRoutes : null
+
   return (
     <div className='flex flex-col w-full'>
       {
-        routes.map((route)=>(
+        routes?.map((route)=>(
             <SideBarItem
              key={route.href}
              icon={route.icon}
