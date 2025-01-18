@@ -11,13 +11,14 @@ import {
   import { Button } from "./ui/button";
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Textarea } from './ui/textarea';
 import { cn } from '@/lib/utils';
-const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
+import Options from './ui/options';
+
+const CategoryForm = ({setCourse,courseCategory,courseId}) => {
     const [isEditing, setIsEditing] = useState(false);
     const form = useForm({
         defaultValues: {
-          description: "",
+          category: "",
         },
       });
       const { isValid,isSubmitting} = form.formState;
@@ -25,22 +26,22 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
       const toggleEdit = ()=> setIsEditing((current)=> !current)
       const submitHandler = async(editedData) => {
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/editDescription/${courseId}`,editedData,{withCredentials:true})
+            const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/editCategory/${courseId}`,editedData,{withCredentials:true})
             if(response.statusText === "OK" || response.status === 200){
-              setCourse((prev)=>({...prev,description:response.data.description}))
+              setCourse((prev)=>({...prev,category:response.data.category}))
                 toggleEdit()
                 reset()
-                toast.success(response?.data?.message || 'course description updated')
+                toast.success(response?.data?.message || 'course category updated')
             }
         } catch (error) {
             console.log(error);
             toast.error(error?.response?.data?.message || error.message)
         }
-      };
+      }
   return (
     <div className="bg-slate-100 p-4 border rounded-md mt-6">
     <div className="flex items-center justify-between font-medium">
-      <h2 className="text-base ">Course description</h2>
+      <h2 className="text-base ">Course category</h2>
       <Button
         variant="ghost"
         onClick={()=>toggleEdit()}
@@ -50,25 +51,25 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
         ) : (
           <>
             <Pencil className="h-4 w-4" />
-            <span className="text-sm">Edit description</span>
+            <span className="text-sm">Edit category</span>
           </>
         )}
       </Button>
     </div>
     {!isEditing ? (
-      <p className={cn('text-sm mt-2',!courseDescription && "text-slate-500 italic")}>{courseDescription || "No description"}</p>
+      <p className={cn('text-sm mt-2',!courseCategory && "text-slate-500 italic")}>{courseCategory || "No category selected"}</p>
     ) : (
       <div className="mt-3">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submitHandler)}>
             <FormField
               control={form.control}
-              name="description"
-              rules={{ required: "Description is required" }}
+              name="category"
+              rules={{ required: "Category is required" }}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                   <Textarea  disabled={isSubmitting} placeholder='e.g This course is about...' {...field}/>
+                   <Options field={field}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,4 +90,4 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
   )
 }
 
-export default DescriptionForm
+export default CategoryForm

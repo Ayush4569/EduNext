@@ -22,32 +22,10 @@ const courseSchema = new mongoose.Schema(
     },
 
     chapters: [
-      {
-        title: {
-          type: String,
-          required: [true, "Chapter title is required"],
-        },
-        content: {
-          type: String,
-          required: [true, "Chapter content is required"],
-        },
-        access: {
-          type: Boolean,
-          required: [true, "Chapter access type is required"],
-          default: false,
-        },
-        video: {
-          type: String,
-          required: [true, "Chapter video URL is required"],
-          validate: {
-            validator: function (v) {
-              return /^https?:\/\/.+\..+/.test(v); // Validates URL
-            },
-            message: (props) => `${props.value} is not a valid URL!`,
-          },
-        },
-      },
-      ,
+     {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Chapter",
+     }
     ],
 
     price: {
@@ -57,14 +35,9 @@ const courseSchema = new mongoose.Schema(
 
     attachments: [
       {
-        type: String,
-        validate: {
-          validator: function (v) {
-            return /^https?:\/\/.+\..+/.test(v); // Validates URL
-          },
-          message: (props) => `${props.value} is not a valid URL!`,
-        },
-      },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attachment",
+       }
     ],
 
     author: {

@@ -1,31 +1,44 @@
-import {useRef, useState} from 'react'
-import { ImageIcon, Pencil } from 'lucide-react';
+import { useRef, useState } from "react";
+import { ImageIcon, Pencil } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
-  import { Button } from "./ui/button";
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { Input } from './ui/input';
+import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "./ui/button";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { ProgressBar } from "react-loader-spinner";
 
-const ImageForm = ({courseId,courseImage}) => {
+const ImageForm = ({ courseId, courseImage,setCourse }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const fileUploadRef = useRef(null)
+  const [loading,setLoading] = useState(false)
+
+  const fileUploadRef = useRef(null);
   const toggleEdit = () => setIsEditing((current) => !current);
-  const submitHandler = async (editedData) => {
+  const submitHandler = async (e) => {
+    const formData = new FormData();
+    formData.append("coverImage", e.target.files[0]);
+    console.log(e.target.files[0]);
     try {
+      setLoading(true)
       const response = await axios.patch(
-        `${import.meta.env.VITE_BASEURL}/courses/editDescription/${courseId}`,
-        editedData,
-        { withCredentials: true }
+        `${import.meta.env.VITE_BASEURL}/courses/editCoverImage/${courseId}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-type": "multipart/form-data" },
+        }
       );
+      console.log(response);
       if (response.statusText === "OK" || response.status === 200) {
+       setCourse((prev)=>({...prev,coverImage:response.data.url}))
         toggleEdit();
-        reset();
-        toast.success(response?.data?.message || "course description updated");
+        toast.success(response?.data?.message || "course image updated");
       }
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message || error.message);
+    }
+    finally{
+      setLoading(false)
     }
   };
   return (
@@ -43,30 +56,48 @@ const ImageForm = ({courseId,courseImage}) => {
           )}
         </Button>
       </div>
-      {!isEditing && (
-        !courseImage  ? (
-            <div className='h-60 flex items-center justify-center bg-slate-200 rouded-md'>
-                <ImageIcon className='h-14 w-14 text-slate-500'/>
-            </div>
-        )
-        :(
-            <div className='relative aspect-video mt-2'>
-               <img className='object-cover rounded-md' src={courseImage} />
-            </div>
-        )
-      )}
+      {!isEditing &&
+        (courseImage ? (
+          <div className="relative aspect-video">
+            <img className="object-cover rounded-md h-full w-full" src={courseImage} />
+          </div>
+        ) : (
+          <div className="h-60 flex items-center justify-center bg-slate-200 rouded-md">
+            <ImageIcon className="h-14 w-14 text-slate-500" />
+          </div>
+        ))}
       {isEditing && (
         <div className="mt-3">
-            <form onSubmit={submitHandler} encType='multipart/form-data'>
-              <div className='h-60 bg-slate-200 rouded-md cursor-pointer'>
-              <Input ref={fileUploadRef} type='file' className='hidden' />
-                <div onClick={()=>fileUploadRef.current.click()} className='w-full h-full flex items-center justify-center cursor-pointer'>
-                  <h1 className='text-2xl mr-4'> Upload an image</h1>
-                  <FontAwesomeIcon className='h-6' icon={faUpload}/>
-                </div>
+          {loading ? (
+           <div className="h-60 flex items-center justify-center">
+            <ProgressBar height={120} width={120}/>
+           </div>
+          ):
+          (
+            <>
+            <div className="h-60 bg-slate-200 rouded-md cursor-pointer">
+            <input
+              onChange={submitHandler}
+              ref={fileUploadRef}
+              type="file"
+              className="hidden"
+              name="coverImage"
+            />
+            <div
+              onClick={() => fileUploadRef.current.click()}
+              className="w-full h-full flex items-center justify-center cursor-pointer"
+            >
+              <div className="flex flex-col justify-center">
+                <h1 className="text-2xl mr-4 flex items-center gap-2"> Upload an image <span className="text-blue-600 text-xl">(max 10mb)</span></h1>
+                <FontAwesomeIcon className="h-10" icon={faCloudArrowUp} />
               </div>
-              <div className='mt-4 text-xs text-muted-foreground'>16:9 ratio recommended</div>     
-            </form>
+            </div>
+          </div>
+            </>
+          )}
+          <div className="mt-4 text-md text-muted-foreground">
+            16:9 ratio recommended
+          </div>
         </div>
       )}
     </div>

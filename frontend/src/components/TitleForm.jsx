@@ -12,7 +12,7 @@ import {
   import { Input } from "./ui/input";
 import axios from 'axios';
 import toast from 'react-hot-toast';
-const TitleForm = ({courseTitle,courseId}) => {
+const TitleForm = ({courseTitle,courseId,setCourse}) => {
     const [isEditing, setIsEditing] = useState(false);
     const form = useForm({
         defaultValues: {
@@ -26,6 +26,7 @@ const TitleForm = ({courseTitle,courseId}) => {
         try {
             const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/editTitle/${courseId}`,editedData,{withCredentials:true})
             if(response.statusText === "OK" || response.status === 200){
+              setCourse((prev)=>({...prev,title:response.data.title}))
                 toggleEdit()
                 reset()
                 toast.success(response?.data?.message || 'course title updated')
@@ -54,7 +55,7 @@ const TitleForm = ({courseTitle,courseId}) => {
             </Button>
           </div>
           {!isEditing ? (
-            <p>{courseTitle|| "test"}</p>
+            <p>{courseTitle}</p>
           ) : (
             <div className="mt-3">
               <Form {...form}>
@@ -62,6 +63,7 @@ const TitleForm = ({courseTitle,courseId}) => {
                   <FormField
                     control={form.control}
                     name="title"
+                    rules={{ required: "Title is required" }}
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>

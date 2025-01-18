@@ -11,26 +11,30 @@ import {
   import { Button } from "./ui/button";
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Textarea } from './ui/textarea';
+import { Input } from "./ui/input";
 import { cn } from '@/lib/utils';
-const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
+
+const PriceForm = ({courseId,coursePrice,setCourse}) => {
     const [isEditing, setIsEditing] = useState(false);
     const form = useForm({
         defaultValues: {
-          description: "",
+          price: 0,
         },
       });
       const { isValid,isSubmitting} = form.formState;
       const { reset} = form;
       const toggleEdit = ()=> setIsEditing((current)=> !current)
+      function convertToInr(price){
+         return new Intl.NumberFormat('en-US',{style:'currency',currency:'INR'}).format(price)
+      }
       const submitHandler = async(editedData) => {
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/editDescription/${courseId}`,editedData,{withCredentials:true})
+            const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/editPrice/${courseId}`,editedData,{withCredentials:true})
             if(response.statusText === "OK" || response.status === 200){
-              setCourse((prev)=>({...prev,description:response.data.description}))
+              setCourse((prev)=>({...prev,price:response.data.price}))
                 toggleEdit()
                 reset()
-                toast.success(response?.data?.message || 'course description updated')
+                toast.success(response?.data?.message || 'course price updated')
             }
         } catch (error) {
             console.log(error);
@@ -38,9 +42,9 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
         }
       };
   return (
-    <div className="bg-slate-100 p-4 border rounded-md mt-6">
+    <div className="bg-slate-100 p-4 border rounded-md mt-1 border-red-50">
     <div className="flex items-center justify-between font-medium">
-      <h2 className="text-base ">Course description</h2>
+      <h2 className="text-base ">Course price</h2>
       <Button
         variant="ghost"
         onClick={()=>toggleEdit()}
@@ -50,25 +54,36 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
         ) : (
           <>
             <Pencil className="h-4 w-4" />
-            <span className="text-sm">Edit description</span>
+            <span className="text-sm">Edit price</span>
           </>
         )}
       </Button>
     </div>
     {!isEditing ? (
-      <p className={cn('text-sm mt-2',!courseDescription && "text-slate-500 italic")}>{courseDescription || "No description"}</p>
+      <p className={cn('text-sm mt-2',!coursePrice && "text-slate-500 italic")}>
+        {
+            coursePrice ? (
+                convertToInr(coursePrice)
+            ) : "No price"
+        }
+      </p>
     ) : (
       <div className="mt-3">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(submitHandler)}>
             <FormField
               control={form.control}
-              name="description"
-              rules={{ required: "Description is required" }}
+              name="price"
+              rules={{ required: "Price is required" }}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                   <Textarea  disabled={isSubmitting} placeholder='e.g This course is about...' {...field}/>
+                  <Input
+                            disabled={isSubmitting}
+                            type="number"
+                            placeholder="e.g. $49"
+                            {...field}
+                          />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,4 +104,4 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
   )
 }
 
-export default DescriptionForm
+export default PriceForm
