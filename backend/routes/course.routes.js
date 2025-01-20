@@ -1,6 +1,6 @@
 import express from 'express'
 import { body ,param} from "express-validator";
-import { createCourse, getCourseById,updateCourseTitle,updateCourseImage,updateCourseDescription,updateCourseCategory,updateCoursePrice } from '../controllers/course.controller.js';
+import { createCourse, getCourseById,updateCourseTitle,updateCourseImage,updateCourseDescription,updateCourseCategory,updateCoursePrice,addAttachments } from '../controllers/course.controller.js';
 import { authInstructor } from '../middlewares/auth.middleware.js';
 import { upload } from '../services/multer.service.js';
 const router = express.Router()
@@ -11,7 +11,7 @@ router.post('/create',[
     body("title").isString().withMessage("Title is required")
 ],authInstructor,createCourse)
 
-router.get('/getCourse/:courseId',[
+router.get('/:courseId',[
     param("courseId").isMongoId().withMessage("Course Id is required")
 ],authInstructor,getCourseById)
 
@@ -38,5 +38,7 @@ router.patch('/editPrice/:courseId',[
     param("courseId").isMongoId().withMessage("Course Id is required"),
     body("price").isString().withMessage("price is required")
 ],authInstructor,updateCoursePrice)
+
+router.post('/:courseId/attachments',authInstructor,upload.array('attachments',5),addAttachments)
 
 export default router

@@ -21,7 +21,7 @@ const CoursesForm = () => {
     return <Navigate to="/" />;
   }
   useEffect(() => {
-   axios.get(`${import.meta.env.VITE_BASEURL}/courses/getCourse/${courseId}`,{withCredentials:true})
+   axios.get(`${import.meta.env.VITE_BASEURL}/courses/${courseId}`,{withCredentials:true})
          .then((response)=>{
           setCourse(response.data)
           console.log(response.data);
@@ -42,8 +42,8 @@ const CoursesForm = () => {
     course?.coverImage,
     course?.price,
     course?.category,
-
   ];
+  console.log(requiredFields);
   const completedFields = requiredFields.filter((field)=> field!=null || field!=undefined)
   return (
     <div className="mt-4 p-5 h-full">
@@ -96,9 +96,6 @@ const CoursesForm = () => {
       </div>
       <AttachmentsForm setCourse ={setCourse} courseId={course?._id} courseAttachments={course?.attachments}/>
       </div>
-
-
-
       </div>
    
       </div>

@@ -1,44 +1,53 @@
-import {useState} from 'react'
-import { File, Pencil,X } from 'lucide-react';
-import {
-    Form,
-    FormField,
-    FormControl,
-    FormMessage,
-    FormItem,
-  } from "./ui/form";
-  import { useForm } from "react-hook-form";
+import {useState,useRef} from 'react'
+import { File, Pencil,X,PlusCircle } from 'lucide-react';
+
   import { Button } from "./ui/button";
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Input } from "./ui/input";
 import { cn } from '@/lib/utils';
+import { ProgressBar } from 'react-loader-spinner';
+import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
   console.log(courseAttachments);
-    const [isEditing, setIsEditing] = useState(false);
-    const form = useForm({
-        defaultValues: {
-          price: 0,
-        },
-      });
-      const { isValid,isSubmitting} = form.formState;
-      const { reset} = form;
-      const toggleEdit = ()=> setIsEditing((current)=> !current)
-      const submitHandler = async(editedData) => {
-        try {
-            const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/editPrice/${courseId}`,editedData,{withCredentials:true})
-            if(response.statusText === "OK" || response.status === 200){
-              setCourse((prev)=>({...prev,price:response.data.price}))
-                toggleEdit()
-                reset()
-                toast.success(response?.data?.message || 'course price updated')
-            }
-        } catch (error) {
-            console.log(error);
-            toast.error(error?.response?.data?.message || error.message)
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading,setLoading] = useState(false)
+
+  const fileUploadRef = useRef(null);
+  const toggleEdit = () => setIsEditing((current) => !current);
+
+  const submitHandler = async (e) => {
+    e.preventDefault()
+    console.log(e.target.files);
+    const formData = new FormData();
+    for (let i = 0; i < e.target.files.length; i++) {
+     formData.append('attachments',e.target.files[i])
+    }
+    try {
+      setLoading(true)
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASEURL}/courses/${courseId}/attachments`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-type": "multipart/form-data" },
         }
-      };
+      );
+      console.log(response);
+      if (response.statusText === "OK" || response.status === 200) {
+       setCourse((prev)=>({...prev,attachments:response.data.attachments}))
+        toggleEdit();
+        toast.success(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || error.message);
+    }
+    finally{
+      setLoading(false)
+    }
+  };
       const deleteAttachment = async(attachmentId)=>{
        try {
         
@@ -58,65 +67,62 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
           <>Cancel</>
         ) : (
           <>
-            <Pencil className="h-4 w-4" />
-            <span className="text-sm">Edit attachments</span>
+            <PlusCircle className="h-6 w-6" />
+            <span className="text-sm">Add attachments</span>
           </>
         )}
       </Button>
     </div>
-    {!isEditing ? (
-      <>
-        
-      <div>
+    {!isEditing && (  
+        <>
        {
             courseAttachments?.length>0 ? (
-                courseAttachments.map((attachment,id)=>(
-                   <div key={id} className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md mt-2'>
+                courseAttachments.map((attachment)=>(
+                   <div key={attachment._id} className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md mt-2'>
                     <File className='h-4 w-4 mr-2 flex-shrink-0'/>
-                    <p className='text-xs line-clamp-1'>{attachment}</p>
+                    <p className='text-xs line-clamp-1  '>{attachment.attachment}</p>
                      <button onClick={()=>deleteAttachment()} className='ml-auto hover:opacity-75 transition'>
-                     <X className='h-4 w-4'/>
+                     <X className='h-4 w-4 ml-4'/>
                      </button>
                    </div> 
                 ))
             ) :   <p className={cn('text-sm mt-2',!courseAttachments?.length>0 && "text-slate-500 italic")}>No attachments</p>
         }
-    
-      </div>
       </>
-  
-       
-    ) : (
+    )} 
+     {isEditing && (
       <div className="mt-3">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(submitHandler)}>
-            <FormField
-              control={form.control}
-              name="price"
-              rules={{ required: "Attachments are required" }}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                  <Input
-                            disabled={isSubmitting}
-                            type="number"
-                            placeholder="e.g. $49"
-                            {...field}
-                          />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              type="submit"
-              className="mt-4 ml-2"
-              disabled={!isValid || isSubmitting}
-            >
-              Save
-            </Button>
-          </form>
-        </Form>
+        {loading ? (
+         <div className="h-60 flex items-center justify-center">
+          <ProgressBar height={120} width={120}/>
+         </div>
+        ):
+        (
+          <>
+          <div className="h-60 bg-slate-200 rouded-md cursor-pointer">
+          <input
+            onChange={submitHandler}
+            ref={fileUploadRef}
+            multiple
+            type="file"
+            className="hidden"
+            name="attachMents"
+          />
+          <div
+            onClick={() => fileUploadRef.current.click()}
+            className="w-full h-full flex items-center justify-center cursor-pointer"
+          >
+            <div className="flex flex-col justify-center">
+              <h1 className="text-xl mr-4 flex items-center gap-2"> Upload an attachment</h1>
+              <FontAwesomeIcon className="h-10" icon={faCloudArrowUp} />
+            </div>
+          </div>
+        </div>
+          </>
+        )}
+        <div className="mt-4 italic text-md text-muted-foreground">
+           upload anything that might be useful for your students
+          </div>
       </div>
     )}
   </div>

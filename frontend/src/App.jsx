@@ -1,6 +1,8 @@
 
 import { Routes,Route } from "react-router-dom";
 import "./App.css";
+import "@uploadthing/react/styles.css";
+
 import StudentSignup from "./pages/StudentSignup";
 import StudentLogin from "./pages/StudentLogin";
 import Layout from "./components/layout";

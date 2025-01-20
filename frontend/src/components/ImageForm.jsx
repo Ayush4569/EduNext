@@ -88,7 +88,7 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
               className="w-full h-full flex items-center justify-center cursor-pointer"
             >
               <div className="flex flex-col justify-center">
-                <h1 className="text-2xl mr-4 flex items-center gap-2"> Upload an image <span className="text-blue-600 text-xl">(max 10mb)</span></h1>
+                <h1 className="text-xl mr-4 flex items-center gap-2"> Upload an image <span className="text-blue-600 text-lg">(max 10mb)</span></h1>
                 <FontAwesomeIcon className="h-10" icon={faCloudArrowUp} />
               </div>
             </div>

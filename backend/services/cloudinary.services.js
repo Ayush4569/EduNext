@@ -7,14 +7,14 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET || 'aj5N_R0SogxIBF7kuksJgCHuxLE',
   });
 
-export const uploadToCloudinary = async(imagePath)=>{
+export const uploadToCloudinary = async(localPath)=>{
     try {
-        if(!imagePath) return new Error('Image path is required')
-        const response = await cloudinary.uploader.upload(imagePath,{resource_type:'auto'})
-        await fs.promises.unlink(imagePath)
+        if(!localPath) return new Error('Asset local path is required')
+        const response = await cloudinary.uploader.upload(localPath,{resource_type:'auto'})
+        await fs.promises.unlink(localPath)
         return response.url
     } catch (error) {
-        await fs.promises.unlink(imagePath)
+        await fs.promises.unlink(localPath)
         console.log(error);
     }
 }

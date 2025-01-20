@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import {Course} from "../models/course.model.js"
+import {Attachment} from "../models/attachments.model.js"
 import { uploadToCloudinary } from "../services/cloudinary.services.js";
 
 const createCourse = async(req,res)=>{
@@ -20,7 +21,7 @@ const getCourseById = async(req,res)=>{
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const course = await Course.findOne({_id:courseId})
+  const course = await Course.findOne({_id:courseId,author:req.instructor}).populate('attachments')
   if(!course){
     return res.status(400).json({ message:"No such course exists" });
   }
@@ -38,7 +39,7 @@ const updateCourseTitle = async(req,res)=>{
     return res.status(200).json({message:"No such course exists"})
   }
   try {
-    await Course.findByIdAndUpdate(courseId,{title})
+    await Course.findOneAndUpdate({_id:courseId,author:req.instructor},{title})
     return res.status(200).json({message:"course title updated",title})
   } catch (error) {
     console.error('Database Error:', error);
@@ -59,7 +60,7 @@ const updateCourseDescription = async(req,res)=>{
     return res.status(200).json({message:"No such course exists"})
   }
   try {
-    await Course.findByIdAndUpdate(courseId,{description})
+    await Course.findOneAndUpdate({_id:courseId,author:req.instructor},{description})
     return res.status(200).json({message:"course description updated",description})
   } catch (error) {
     console.log('updateCourseDescription Error:', error);
@@ -84,7 +85,7 @@ const updateCourseImage = async(req,res)=>{
     if(!uploadedPhotoUrl){
       return res.status(400).json({message:"falied to upload image"})
     }
-     await Course.findByIdAndUpdate(courseId,{coverImage:uploadedPhotoUrl})
+     await Course.findOneAndUpdate({_id:courseId,author:req.instructor},{coverImage:uploadedPhotoUrl})
      return res.status(200).json({message:"course image uploaded",url:uploadedPhotoUrl})
   } catch (error) {
     console.log('updateCourseImage Error:', error);
@@ -104,7 +105,7 @@ const updateCourseCategory = async(req,res)=>{
     return res.status(200).json({message:"No such course exists"})
   }
   try {
-    await Course.findByIdAndUpdate(courseId,{category})
+    await Course.findOneAndUpdate({_id:courseId,author:req.instructor},{category})
     return res.status(200).json({message:"course category updated",category})
   } catch (error) {
     console.log('updateCoursecategory Error:', error);
@@ -124,7 +125,7 @@ const updateCoursePrice = async(req,res)=>{
     return res.status(200).json({message:"No such course exists"})
   }
   try {
-    await Course.findByIdAndUpdate(courseId,{price})
+    await Course.findOneAndUpdate({_id:courseId,author:req.instructor},{price})
     return res.status(200).json({message:"course price updated",price})
   } catch (error) {
     console.log('updateCourseprice Error:', error);
@@ -133,7 +134,36 @@ const updateCoursePrice = async(req,res)=>{
   })
 }
 }
+const addAttachments = async(req,res)=>{
+  const {courseId} = req.params
+  if(!req.files && !Array.isArray(req.files) && req.files.length == 0){
+    return res.status(400).json({ message:'Files are required' });
+}
+try {
+       let uploadedUrls = await Promise.all(req.files.map(async(file)=> {
+        const url = await uploadToCloudinary(file.path);
+        return url
+       }))
+        
+      if(uploadedUrls.length == 0 ){
+        throw new Error('Failed to upload')
+      } 
+      const attachments = await Attachment.insertMany(uploadedUrls.map((url)=>({attachment:url})));
 
+      const attachmentIds = attachments.map((att)=> att._id);
+      const course = await Course.findOneAndUpdate({_id:courseId,author:req.instructor},{
+        $push:{attachments:{$each:attachmentIds}}
+      },{new:true})
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found or not authorized' });
+      }
+  
+      // Respond with success
+      return res.status(200).json({ message: 'Attachments added successfully', attachments });
+} catch (error) {
+    return res.status(500).json({message:error.message})
+} 
+}
 export {
   createCourse,
   getCourseById,
@@ -141,5 +171,6 @@ export {
   updateCourseDescription,
   updateCourseImage,
   updateCourseCategory,
-  updateCoursePrice
+  updateCoursePrice,
+  addAttachments
 }

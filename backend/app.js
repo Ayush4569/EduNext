@@ -6,7 +6,6 @@ import { connectDB } from "./database/db.js";
 import studentRoutes from "./routes/student.routes.js"
 import instructorRoutes from "./routes/instructor.routes.js"
 import courseRoutes from "./routes/course.routes.js"
-import attachmentsRoutes from "./routes/uploadthing.routes.js"
 import path from "path";
 dotenv.config();
 
@@ -16,7 +15,7 @@ const app = express();
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:5173", credentials:true}));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.resolve("./public")));
 
@@ -27,7 +26,6 @@ app.get("/", (req, res) => {
 app.use('/students',studentRoutes)
 app.use('/instructors',instructorRoutes)
 app.use('/courses',courseRoutes)
-app.use('/attachments',attachmentsRoutes)
 
 // server
 app.listen(4000, () => {
