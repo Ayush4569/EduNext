@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import {ColorRing} from "react-loader-spinner"
 const InstructorContext = createContext({});
 
@@ -16,6 +17,7 @@ export const InstructorContextProvider = ({children})=>{
             setInstructor(response.data)
          })
          .catch((error)=>{
+            toast.error(error.message)
             console.log('Instructor context',error);
          })
          .finally(()=> setLoading(false))

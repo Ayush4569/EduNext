@@ -1,6 +1,6 @@
 import express from 'express'
 import { body ,param} from "express-validator";
-import { createCourse, getCourseById,updateCourseTitle,updateCourseImage,updateCourseDescription,updateCourseCategory,updateCoursePrice,addAttachments } from '../controllers/course.controller.js';
+import { createCourse, getCourseById,updateCourseTitle,updateCourseImage,updateCourseDescription,updateCourseCategory,updateCoursePrice,addAttachments, removeAttachment } from '../controllers/course.controller.js';
 import { authInstructor } from '../middlewares/auth.middleware.js';
 import { upload } from '../services/multer.service.js';
 const router = express.Router()
@@ -39,6 +39,13 @@ router.patch('/editPrice/:courseId',[
     body("price").isString().withMessage("price is required")
 ],authInstructor,updateCoursePrice)
 
-router.post('/:courseId/attachments',authInstructor,upload.array('attachments',5),addAttachments)
+router.post('/:courseId/attachments',[
+    param("courseId").isMongoId().withMessage("Course Id is required")
+],authInstructor,upload.array('attachments',5),addAttachments)
+
+router.delete('/:courseId/attachments/:attachmentId',[
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("attachmentId").isMongoId().withMessage("Attachment Id is required"),
+],authInstructor,removeAttachment)
 
 export default router

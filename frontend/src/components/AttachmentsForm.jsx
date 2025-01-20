@@ -1,7 +1,6 @@
 import {useState,useRef} from 'react'
-import { File, Pencil,X,PlusCircle } from 'lucide-react';
-
-  import { Button } from "./ui/button";
+import { File,X,PlusCircle } from 'lucide-react';
+import { Button } from "./ui/button";
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
@@ -19,7 +18,6 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    console.log(e.target.files);
     const formData = new FormData();
     for (let i = 0; i < e.target.files.length; i++) {
      formData.append('attachments',e.target.files[i])
@@ -34,7 +32,6 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
           headers: { "Content-type": "multipart/form-data" },
         }
       );
-      console.log(response);
       if (response.statusText === "OK" || response.status === 200) {
        setCourse((prev)=>({...prev,attachments:response.data.attachments}))
         toggleEdit();
@@ -50,9 +47,14 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
   };
       const deleteAttachment = async(attachmentId)=>{
        try {
-        
+        const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/attachments/${attachmentId}`)
+        if(response.statusText === 'OK' && response.status === 200){
+          setCourse((prev)=>({...prev,attachments:response.data.attachments}))
+          toast.success(response.data.message || 'Attachment removed')
+        }
        } catch (error) {
-        
+        toast.error(error.response?.data?.message || error.message)
+        console.log(error);
        }
       }
   return (
@@ -78,10 +80,10 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
        {
             courseAttachments?.length>0 ? (
                 courseAttachments.map((attachment)=>(
-                   <div key={attachment._id} className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md mt-2'>
+                   <div key={attachment._id} className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border overflow-scroll text-sky-700 rounded-md mt-2'>
                     <File className='h-4 w-4 mr-2 flex-shrink-0'/>
-                    <p className='text-xs line-clamp-1  '>{attachment.attachment}</p>
-                     <button onClick={()=>deleteAttachment()} className='ml-auto hover:opacity-75 transition'>
+                    <p onClick={()=>{window.open(attachment.attachment,"_blank")}} className='text-xs line-clamp-1 cursor-pointer'>{attachment.attachmentName}</p>
+                     <button onClick={()=>deleteAttachment(attachment._id)} className='ml-auto hover:opacity-75 transition'>
                      <X className='h-4 w-4 ml-4'/>
                      </button>
                    </div> 

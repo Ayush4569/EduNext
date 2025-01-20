@@ -19,3 +19,13 @@ export const uploadToCloudinary = async(localPath)=>{
     }
 }
 
+export const deleteFromCloudinary = async(publicId)=>{
+    try {
+        if(!publicId) return new Error('Asset public id is required')
+        await cloudinary.uploader.destroy(publicId)
+    } catch (error) {
+        console.error('Error deleting image from Cloudinary:', error);
+        throw new Error('Failed to delete image from Cloudinary');
+}
+
+}

@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 const attachmentSchema = new mongoose.Schema({
+    attachmentName:{
+      type:String
+    },
     attachment:{
       type: String,
     validate: {

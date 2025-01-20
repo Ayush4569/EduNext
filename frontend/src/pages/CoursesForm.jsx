@@ -24,7 +24,6 @@ const CoursesForm = () => {
    axios.get(`${import.meta.env.VITE_BASEURL}/courses/${courseId}`,{withCredentials:true})
          .then((response)=>{
           setCourse(response.data)
-          console.log(response.data);
          })
          .catch((error)=>{
           console.log(error);
