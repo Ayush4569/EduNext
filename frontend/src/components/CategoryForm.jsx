@@ -51,13 +51,13 @@ const CategoryForm = ({setCourse,courseCategory,courseId}) => {
         ) : (
           <>
             <Pencil className="h-4 w-4" />
-            <span className="text-sm">Edit category</span>
+            <span className="text-base">Edit category</span>
           </>
         )}
       </Button>
     </div>
     {!isEditing ? (
-      <p className={cn('text-sm mt-2',!courseCategory && "text-slate-500 italic")}>{courseCategory || "No category selected"}</p>
+      <p className={cn('text-base mt-2',!courseCategory && "text-slate-500 italic")}>{courseCategory || "No category selected"}</p>
     ) : (
       <div className="mt-3">
         <Form {...form}>

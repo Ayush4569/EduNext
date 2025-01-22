@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import { Course } from "../models/course.model.js";
+import { Chapter } from "../models/chapters.model.js";
 import { Attachment } from "../models/attachments.model.js";
 import {
   deleteFromCloudinary,
@@ -26,7 +27,7 @@ const getCourseById = async (req, res) => {
   const course = await Course.findOne({
     _id: courseId,
     author: req.instructor,
-  }).populate("attachments");
+  }).populate("attachments").populate('chapters');
   if (!course) {
     return res.status(400).json({ message: "No such course exists" });
   }
@@ -173,21 +174,19 @@ const addAttachments = async (req, res) => {
         return url;
       })
     );
-    
-    let attachmentNames = req.files.map((file)=> file.originalname)
+
+    let attachmentNames = req.files.map((file) => file.originalname);
 
     if (uploadedUrls.length == 0) {
       throw new Error("Failed to upload");
     }
-    const attachments = uploadedUrls.map((url,idx)=>(
-      {
-        attachment:url,
-        attachmentName:attachmentNames[idx]
-      }
-    ));
-    console.log('attachments',attachments);
-    const insertedDocs  = await Attachment.insertMany(attachments)
-    console.log('insertedDocs',insertedDocs);
+    const attachments = uploadedUrls.map((url, idx) => ({
+      attachment: url,
+      attachmentName: attachmentNames[idx],
+    }));
+    console.log("attachments", attachments);
+    const insertedDocs = await Attachment.insertMany(attachments);
+    console.log("insertedDocs", insertedDocs);
     const attachmentIds = insertedDocs.map((att) => att._id);
     const course = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
@@ -235,15 +234,43 @@ const removeAttachment = async (req, res) => {
     await Attachment.findByIdAndDelete(attachmentId);
     const publicId = attachment.attachment.split("/").pop().split(".")[0];
     const deletedFile = await deleteFromCloudinary(publicId);
-    return res
-      .status(200)
-      .json({
-        attachments: updatedCourse.attachments,
-        message: "Attachment removed",
-      });
+    return res.status(200).json({
+      attachments: updatedCourse.attachments,
+      message: "Attachment removed",
+    });
   } catch (error) {
     console.error("Error removing attachment:", error);
     return res.status(500).json({ message: error.message });
+  }
+};
+const createChapter = async (req, res) => {
+  const { courseId } = req.params;
+  const {title} = req.body
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  try {
+    const createdChapter = await Chapter.create({ title });
+
+    const courseWithChapter = await Course.findOneAndUpdate(
+      { _id: courseId, author: req.instructor },
+      {
+        $addToSet:{chapters:createdChapter._id},
+      },
+      {new:true}
+    ).populate("chapters");
+    if (courseWithChapter) {
+      return res
+        .status(200)
+        .json({
+          message: "chapter created",
+          chapter: courseWithChapter.chapters,
+        });
+    }
+  } catch (error) {
+    console.error("Error creating chapters:", error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 export {
@@ -256,4 +283,5 @@ export {
   updateCoursePrice,
   addAttachments,
   removeAttachment,
+  createChapter,
 };

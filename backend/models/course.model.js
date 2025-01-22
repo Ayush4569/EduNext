@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { Chapter } from "./chapters.model.js";
+import { Attachment } from "./attachments.model.js";
 
 const courseSchema = new mongoose.Schema(
   {
@@ -63,4 +65,32 @@ const courseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+courseSchema.pre('findOneAndDelete',async function(next){
+  const courseId = this.getQuery()._id
+  try {
+    const courseChapterIds = await this.model.findById(courseId).select('chapters')
+    if (!courseChapterIds) {
+      return next(new Error("Course chapters not found"));
+    }
+    await Chapter.deleteMany({_id:{$in:courseChapterIds}})
+    next()
+  } catch (error) {
+    next(error);
+  }
+ 
+}
+)
+courseSchema.pre('findOneAndDelete',async function(next){
+  const courseId = this.getQuery()._id
+  try {
+    const courseAttachmentIds = await this.model.findById(courseId).select('attachments')
+    if (!courseAttachmentIds) {
+      return next(new Error("Course attachments not found"));
+    }
+    await Attachment.deleteMany({_id:{$in:courseAttachmentIds}})
+    next()
+  } catch (error) {
+    next(error);
+  }
+})
 export const Course = mongoose.model("Course", courseSchema);

@@ -52,9 +52,7 @@ studentSchema.statics.hashPassword = async (password) => {
   return await bcrypt.hash(password, 10);
 };
 studentSchema.methods.generateAuthToken = function() {
-  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "2d",
-  });
+  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
 };
 studentSchema.methods.verifyPassword = async function(password) {
   return await bcrypt.compare(this.password, password);

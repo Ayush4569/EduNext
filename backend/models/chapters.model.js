@@ -4,26 +4,31 @@ const chapterSchema = new mongoose.Schema(
         {
           title: {
             type: String,
+            unique:true,
             required: [true, "Chapter title is required"],
           },
           content: {
             type: String,
-            required: [true, "Chapter content is required"],
           },
-          access: {
+          isFree: {
             type: Boolean,
-            required: [true, "Chapter access type is required"],
+            default: false,
+          },
+          isPublished:{
+            type: Boolean,
             default: false,
           },
           video: {
             type: String,
-            required: [true, "Chapter video URL is required"],
             validate: {
               validator: function (v) {
                 return /^https?:\/\/.+\..+/.test(v); // Validates URL
               },
               message: (props) => `${props.value} is not a valid URL!`,
             }
+          },
+          progress:{
+            type:String
           }    
 },{timestamps:true})
 

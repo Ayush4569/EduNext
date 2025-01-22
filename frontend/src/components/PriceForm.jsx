@@ -54,13 +54,13 @@ const PriceForm = ({courseId,coursePrice,setCourse}) => {
         ) : (
           <>
             <Pencil className="h-4 w-4" />
-            <span className="text-sm">Edit price</span>
+            <span className="text-base">Edit price</span>
           </>
         )}
       </Button>
     </div>
     {!isEditing ? (
-      <p className={cn('text-sm mt-2',!coursePrice && "text-slate-500 italic")}>
+      <p className={cn('text-base mt-2',!coursePrice && "text-slate-500 italic")}>
         {
             coursePrice ? (
                 convertToInr(coursePrice)

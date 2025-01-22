@@ -9,7 +9,6 @@ import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
-  console.log(courseAttachments);
   const [isEditing, setIsEditing] = useState(false);
   const [loading,setLoading] = useState(false)
 
@@ -88,7 +87,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
                      </button>
                    </div> 
                 ))
-            ) :   <p className={cn('text-sm mt-2',!courseAttachments?.length>0 && "text-slate-500 italic")}>No attachments</p>
+            ) :   <p className={cn('text-base mt-2',!courseAttachments?.length>0 && "text-slate-500 italic")}>No attachments</p>
         }
       </>
     )} 

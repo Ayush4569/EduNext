@@ -49,7 +49,7 @@ const TitleForm = ({courseTitle,courseId,setCourse}) => {
               ) : (
                 <>
                   <Pencil className="h-4 w-4" />
-                  <span className="text-sm">Edit title</span>
+                  <span className="text-base">Edit title</span>
                 </>
               )}
             </Button>

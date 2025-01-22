@@ -12,6 +12,7 @@ import ImageForm from "@/components/ImageForm";
 import CategoryForm from "@/components/CategoryForm";
 import PriceForm from "@/components/PriceForm";
 import AttachmentsForm from "@/components/AttachmentsForm";
+import ChapterForm from "@/components/ChapterForm";
 const CoursesForm = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ const CoursesForm = () => {
     course?.price,
     course?.category,
   ];
-  console.log(requiredFields);
+  // console.log(course);
   const completedFields = requiredFields.filter((field)=> field!=null || field!=undefined)
   return (
     <div className="mt-4 p-5 h-full">
@@ -76,7 +77,7 @@ const CoursesForm = () => {
         <h2 className="text-xl">Course chapters</h2>
       </div>
       <div>
-        Todo:Chapters
+       <ChapterForm setCourse ={setCourse} courseId={course?._id} courseChapters={course?.chapters}/>
       </div>
 
       <div className="flex items-center gap-x-2 ">

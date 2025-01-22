@@ -51,7 +51,7 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
           ) : (
             <>
               <Pencil className="h-4 w-4" />
-              <span className="text-sm">Edit image</span>
+              <span className="text-base">Edit image</span>
             </>
           )}
         </Button>
