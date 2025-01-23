@@ -42,6 +42,7 @@ const CoursesForm = () => {
     course?.coverImage,
     course?.price,
     course?.category,
+    course?.chapters.some((chapter)=> chapter.isPublished === true)
   ];
   // console.log(course);
   const completedFields = requiredFields.filter((field)=> field!=null || field!=undefined)
@@ -86,7 +87,7 @@ const CoursesForm = () => {
         </div>
         <h2 className="text-xl">Sell your course</h2>
       </div>
-        <PriceForm setCourse ={setCourse} courseId={course?._id} coursePrice={course?.price}/>
+        <div><PriceForm setCourse ={setCourse} courseId={course?._id} coursePrice={course?.price}/></div>
       <div>
       <div className="flex items-center gap-x-2 ">
       <div className="bg-sky-100 h-12 w-12 p-3 rounded-full flex items-center justify-center">
@@ -97,7 +98,6 @@ const CoursesForm = () => {
       <AttachmentsForm setCourse ={setCourse} courseId={course?._id} courseAttachments={course?.attachments}/>
       </div>
       </div>
-   
       </div>
       
     

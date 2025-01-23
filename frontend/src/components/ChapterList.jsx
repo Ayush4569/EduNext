@@ -1,28 +1,55 @@
 import React, { useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import {DragDropContext,Draggable,Droppable} from "@hello-pangea/dnd"
 import { cn } from "@/lib/utils";
 import { Badge } from './ui/badge';
 import { Grip ,Pencil} from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const ChapterList = ({ items }) => {
-  const [chapters, setChapters] = useState(items);
+const ChapterList = ({ initialChapters,setCourse }) => {
+  const [chapters, setChapters] = useState(initialChapters);
+  const onDragEnd = async(result) => {
+    if(!result.destination) return;
+    const chapterOrder = Array.from(chapters);
+    const [displacedChapter] = chapterOrder.splice(result.source.index,1);
+    chapterOrder.splice(result.destination.index,0,displacedChapter)
+    setChapters(chapterOrder)
+    setCourse((prev)=>({...prev,chapters}));
+    try {
+      const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters`,
+        chapters,
+        {
+          withCredentials:true
+        })
+
+        if(response.statusText === "OK" || response.status === 200){
+          setCourse((prev)=>({...prev,chapters:response.data.chapters}));
+          toast.success(response?.data?.message || "Chapter order updated") 
+        }
+
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+       console.log(error);
+    }
+  }
   return (
-    <DragDropContext onDragEnd={() => {}}>
-      <Droppable droppableId="chapters"> 
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef}>
-            {chapters.map((chapter, idx) => (
-              <Draggable
-                key={chapter._id}
-                draggableId={chapter._id}
-                index={idx}
-              >
-                {(provided) => (
+    <DragDropContext onDragEnd={onDragEnd}>
+    <Droppable droppableId="chapters">
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          
+        >
+          {chapters?.map((chapter, index) => (
+            <Draggable key={chapter._id} draggableId={chapter._id} index={index}>
+                 {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
+                    {...provided.dragHandleProps}
                     className={cn(
-                      "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-4 text-sm",
+                      "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-2 text-sm",
                       chapter.isFree && "bg-sky-100 border-sky-200 text-sky-700"
                     )}
                   >
@@ -31,7 +58,7 @@ const ChapterList = ({ items }) => {
                         "px-3 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
                         chapter.isFree && "border-r-sky-200 hover:bg-sky-200"
                       )}
-                      {...provided.dragHandleProps}
+                   
                     >
                       <Grip className="h-5 w-5" />
                     </div>
@@ -50,13 +77,13 @@ const ChapterList = ({ items }) => {
                     </div>
                   </div>
                 )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+            </Draggable>
+          ))}
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  </DragDropContext>
   );
 };
 

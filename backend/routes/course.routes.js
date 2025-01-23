@@ -52,5 +52,8 @@ router.post('/:courseId/chapters',[
     param("courseId").isMongoId().withMessage("Course Id is required"),
     body("title").isString().withMessage("Title is required")
 ],authInstructor,createChapter)
-
+router.patch('/:courseId/chapters',[
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    body("title").isString().withMessage("Title is required")
+],authInstructor,createChapter)
 export default router
