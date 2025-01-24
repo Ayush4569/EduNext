@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Course } from "./course.model";
 
 const chapterSchema = new mongoose.Schema(
         {
@@ -31,5 +32,14 @@ const chapterSchema = new mongoose.Schema(
             type:String
           }    
 },{timestamps:true})
+
+chapterSchema.post("findOneAndUpdate",async function(next){
+  const chapterId = this.getQuery()._id;
+  try {
+    await Course.findOneAndUpdate({chapters:chapterId},{})
+  } catch (error) {
+    
+  }
+})
 
 export const Chapter = mongoose.model("Chapter", chapterSchema);

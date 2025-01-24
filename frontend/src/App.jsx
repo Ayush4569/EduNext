@@ -15,6 +15,7 @@ import axios from "axios";
 import InstructorSignup from "./pages/InstructorSignup";
 import InstructorLogin from "./pages/InstructorLogin";
 import CoursesForm from "./pages/CoursesForm";
+import ChapterUpdateForm from "./pages/ChapterUpdateForm";
 
 function App() {
 axios.defaults.withCredentials = true
@@ -27,6 +28,7 @@ axios.defaults.withCredentials = true
     <Route path="/teacher/analytics" element={<Teacheranalytics/>} />  
     <Route path="/teacher/courses/create" element={<CreateCourses/>} />  
     <Route path="/teacher/courses/:courseId" element={<CoursesForm/>} /> 
+    <Route path="/teacher/courses/:courseId/chapter/:chapterId/editChapter" element={<ChapterUpdateForm/>} /> 
     </Route>
      <Route path="/signup" element={<StudentSignup/>}/>
      <Route path="/login" element={<StudentLogin/>}/>

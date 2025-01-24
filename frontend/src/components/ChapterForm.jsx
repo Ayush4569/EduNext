@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PlusCircle, Grip, Pencil } from "lucide-react";
+import { PlusCircle, Grip, Pencil, Loader2 } from "lucide-react";
 import { Form, FormField, FormControl, FormMessage, FormItem } from "./ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
@@ -11,8 +11,8 @@ import { Input } from "./ui/input";
 import ChapterList from "./ChapterList";
 
 const ChapterForm = ({ courseChapters, courseId, setCourse }) => {
-  console.log(courseChapters);
   const [isEditing, setIsEditing] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const form = useForm({
     defaultValues: {
       title: "",
@@ -42,7 +42,14 @@ const ChapterForm = ({ courseChapters, courseId, setCourse }) => {
 
   return (
     <div>
-      <div className="bg-slate-100 p-5 border rounded-md mt-6">
+      <div className="relative bg-slate-100 p-5 border rounded-md mt-6">
+        {
+          isUpdating && (
+            <div className="w-full absolute top-0 right-0 h-full flex items-center justify-center bg-slate-500/20 rounded-md">
+              <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
+            </div>
+          )
+        }
         <div className="flex items-center justify-between font-medium mb-3">
           <h2 className="text-base ">Course chapters</h2>
           <Button variant="ghost" onClick={() => toggleEdit()}>
@@ -60,7 +67,7 @@ const ChapterForm = ({ courseChapters, courseId, setCourse }) => {
           <>
             {!isEditing &&
               (courseChapters?.length > 0 ? (
-                <ChapterList initialChapters={courseChapters} setCourse={setCourse}/>
+                <ChapterList courseId={courseId} initialChapters={courseChapters} setCourse={setCourse} setIsUpdating={setIsUpdating}/>
               ) : (
                 <p
                   className={cn(

@@ -6,6 +6,7 @@ import {
   deleteFromCloudinary,
   uploadToCloudinary,
 } from "../services/cloudinary.services.js";
+import mongoose from "mongoose";
 
 const createCourse = async (req, res) => {
   const errors = validationResult(req);
@@ -27,7 +28,9 @@ const getCourseById = async (req, res) => {
   const course = await Course.findOne({
     _id: courseId,
     author: req.instructor,
-  }).populate("attachments").populate('chapters');
+  })
+    .populate("attachments")
+    .populate("chapters");
   if (!course) {
     return res.status(400).json({ message: "No such course exists" });
   }
@@ -35,14 +38,10 @@ const getCourseById = async (req, res) => {
 };
 const updateCourseTitle = async (req, res) => {
   const { title } = req.body;
-
   const { courseId } = req.params;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
-  }
-  if (!courseId) {
-    return res.status(200).json({ message: "No such course exists" });
   }
   try {
     await Course.findOneAndUpdate(
@@ -59,14 +58,10 @@ const updateCourseTitle = async (req, res) => {
 };
 const updateCourseDescription = async (req, res) => {
   const { description } = req.body;
-  console.log(req.body);
   const { courseId } = req.params;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
-  }
-  if (!courseId) {
-    return res.status(200).json({ message: "No such course exists" });
   }
   try {
     await Course.findOneAndUpdate(
@@ -120,9 +115,6 @@ const updateCourseCategory = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
   }
-  if (!courseId) {
-    return res.status(200).json({ message: "No such course exists" });
-  }
   try {
     await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
@@ -145,9 +137,6 @@ const updateCoursePrice = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
   }
-  if (!courseId) {
-    return res.status(200).json({ message: "No such course exists" });
-  }
   try {
     await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
@@ -163,7 +152,6 @@ const updateCoursePrice = async (req, res) => {
 };
 const addAttachments = async (req, res) => {
   const { courseId } = req.params;
-
   if (!req.files && !Array.isArray(req.files) && req.files.length == 0) {
     return res.status(400).json({ message: "Files are required" });
   }
@@ -184,18 +172,16 @@ const addAttachments = async (req, res) => {
       attachment: url,
       attachmentName: attachmentNames[idx],
     }));
-    console.log("attachments", attachments);
     const insertedDocs = await Attachment.insertMany(attachments);
-    console.log("insertedDocs", insertedDocs);
     const attachmentIds = insertedDocs.map((att) => att._id);
-    const course = await Course.findOneAndUpdate(
+    const updatedCourse = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
       {
         $push: { attachments: { $each: attachmentIds } },
       },
       { new: true }
     );
-    if (!course) {
+    if (!updatedCourse) {
       return res
         .status(404)
         .json({ message: "Course not found or not authorized" });
@@ -245,7 +231,7 @@ const removeAttachment = async (req, res) => {
 };
 const createChapter = async (req, res) => {
   const { courseId } = req.params;
-  const {title} = req.body
+  const { title } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
@@ -256,23 +242,86 @@ const createChapter = async (req, res) => {
     const courseWithChapter = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
       {
-        $addToSet:{chapters:createdChapter._id},
+        $addToSet: { chapters: createdChapter._id },
       },
-      {new:true}
+      { new: true }
     ).populate("chapters");
     if (courseWithChapter) {
-      return res
-        .status(200)
-        .json({
-          message: "chapter created",
-          chapter: courseWithChapter.chapters,
-        });
+      return res.status(200).json({
+        message: "chapter created",
+        chapter: courseWithChapter.chapters,
+      });
     }
   } catch (error) {
     console.error("Error creating chapters:", error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+const reorderChapters = async (req, res) => {
+  console.log(req.body);
+  const { courseId } = req.params;
+  const { chapters } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  try {
+    const course = await Course.findOneAndUpdate(
+      { _id: courseId, author: req.instructor },
+      { chapters }
+    ).populate("chapters");
+    return res
+      .status(200)
+      .json({
+        message: "chapter reordered",
+        reorderedChapters: course.chapters,
+      });
+  } catch (error) {
+    console.error("Error reordering chapters:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+const getCourseChapter = async (req, res) => {
+  const { courseId, chapterId } = req.params;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  const isValidCourseChapter = await Course.findOne({
+    _id: courseId,
+    author: req.instructor,
+    chapters: chapterId ,
+  });
+  if (!isValidCourseChapter) {
+    return res
+      .status(400)
+      .json({ message: "This chapter does not belong to this course" });
+  }
+  const chapter = await Chapter.findById(chapterId);
+  if(!chapter){
+    return res.status(404).json({message:"Chapter not found"})
+  }
+  return res.status(200).json({chapter});
+};
+const editChapterTitle = async (req,res)=>{
+  const { courseId, chapterId } = req.params;
+  const { title } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  const isValidCourseChapter = await Course.findOne({
+    _id: courseId,
+    author: req.instructor,
+    chapters: chapterId ,
+  });
+  if (!isValidCourseChapter) {
+    return res
+      .status(400)
+      .json({ message: "This chapter does not belong to this course" });
+  }
+  // const updatedChapterTitle = await Chapter.findOneAndUpdate({_id:})
+}
 export {
   createCourse,
   getCourseById,
@@ -283,5 +332,7 @@ export {
   updateCoursePrice,
   addAttachments,
   removeAttachment,
+  reorderChapters,
   createChapter,
+  getCourseChapter,
 };

@@ -17,7 +17,6 @@ export const StudentContextProvider = ({children})=>{
             setStudent(response.data)
          })
          .catch((error)=>{
-          toast.error(error.message)
             console.log('student context',error);
          })
          .finally(()=> setLoading(false))

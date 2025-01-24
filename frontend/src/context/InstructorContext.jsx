@@ -17,7 +17,6 @@ export const InstructorContextProvider = ({children})=>{
             setInstructor(response.data)
          })
          .catch((error)=>{
-            toast.error(error.message)
             console.log('Instructor context',error);
          })
          .finally(()=> setLoading(false))

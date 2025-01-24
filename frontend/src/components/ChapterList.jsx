@@ -5,33 +5,41 @@ import { Badge } from './ui/badge';
 import { Grip ,Pencil} from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const ChapterList = ({ initialChapters,setCourse }) => {
+const ChapterList = ({ initialChapters,setCourse,courseId,setIsUpdating }) => {
   const [chapters, setChapters] = useState(initialChapters);
+  const navigate = useNavigate()
   const onDragEnd = async(result) => {
     if(!result.destination) return;
+    setIsUpdating(true)
     const chapterOrder = Array.from(chapters);
     const [displacedChapter] = chapterOrder.splice(result.source.index,1);
     chapterOrder.splice(result.destination.index,0,displacedChapter)
     setChapters(chapterOrder)
-    setCourse((prev)=>({...prev,chapters}));
     try {
-      const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters`,
-        chapters,
-        {
-          withCredentials:true
-        })
+      const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters/reorder`, {
+        chapters: chapterOrder
+      }, {
+        withCredentials: true
+      });
 
-        if(response.statusText === "OK" || response.status === 200){
-          setCourse((prev)=>({...prev,chapters:response.data.chapters}));
-          toast.success(response?.data?.message || "Chapter order updated") 
-        }
-
+      if (response.statusText === "OK" || response.status === 200) {
+        setCourse((prev) => ({ ...prev, chapters: response.data.reorderedChapters }));
+        toast.success(response?.data?.message || "Chapter reordered");
+      }
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-       console.log(error);
+      console.log(error);
+    } finally{
+      setIsUpdating(false)
     }
+    }
+  const onEdit = (chapterId) => {
+   return navigate(`/teacher/courses/${courseId}/chapter/${chapterId}/editChapter`)
   }
+
+  
   return (
     <DragDropContext onDragEnd={onDragEnd}>
     <Droppable droppableId="chapters">
@@ -73,7 +81,7 @@ const ChapterList = ({ initialChapters,setCourse }) => {
                       >
                         {chapter.isPublished ? "Published" : "Draft"}
                       </Badge>
-                      <Pencil className="w-h4 h-4 cursor-pointer hover:opacity-75 transition" />
+                      <Pencil  onClick={()=>onEdit(chapter._id)} className="w-h4 h-4 cursor-pointer hover:opacity-75 transition" />
                     </div>
                   </div>
                 )}
