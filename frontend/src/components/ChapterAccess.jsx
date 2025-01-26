@@ -1,42 +1,45 @@
 import { useState } from "react";
 import { Pencil } from "lucide-react";
-import { Form, FormField, FormControl, FormMessage, FormItem } from "./ui/form";
+import {
+  Form,
+  FormField,
+  FormControl,
+  FormMessage,
+  FormItem,
+  FormDescription,
+} from "./ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "./ui/checkbox";
 
-const ChapterTitleForm = ({
-  chapterTitle,
-  courseId,
-  setChapter,
-  chapterId,
-}) => {
+const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
   const [isEditing, setIsEditing] = useState(false);
   const form = useForm({
     defaultValues: {
-      title: "",
+      isFree: Boolean(isChapterFree),
     },
   });
-  const { isValid, isSubmitting } = form.formState;
   const { reset } = form;
+  const { isValid, isSubmitting } = form.formState;
   const toggleEdit = () => setIsEditing((current) => !current);
   const submitHandler = async (editedData) => {
+    console.log(editedData);
     try {
       const response = await axios.patch(
         `${
           import.meta.env.VITE_BASEURL
-        }/courses/${courseId}/chapters/${chapterId}/editTitle`,
+        }/courses/${courseId}/chapters/${chapterId}/editAccess`,
         editedData,
         { withCredentials: true }
       );
-      console.log(response);
       if (response.statusText === "OK" || response.status === 200) {
-        setChapter((prev) => ({ ...prev, title: response.data.title }));
+        setCourse((prev) => ({ ...prev, isFree: response.data.isFree }));
         toggleEdit();
         reset();
-        toast.success(response?.data?.message || "chapter title updated");
+        toast.success(response?.data?.message || "chapter access updated");
       }
     } catch (error) {
       console.log(error);
@@ -44,40 +47,54 @@ const ChapterTitleForm = ({
     }
   };
   return (
-    <div className="bg-slate-100 p-4 border rounded-md mt-4">
+    <div className="bg-slate-100 p-4 border rounded-md mt-1 border-red-50">
       <div className="flex items-center justify-between font-medium">
-        <h2 className="text-base ">Chapter title</h2>
+        <h2 className="text-base ">Chapter access</h2>
         <Button variant="ghost" onClick={() => toggleEdit()}>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4" />
-              <span className="text-base">Edit title</span>
+              <span className="text-base">Edit access settings</span>
             </>
           )}
         </Button>
       </div>
       {!isEditing ? (
-        <p>{chapterTitle}</p>
+        <p
+          className={cn(
+            "text-base mt-2",
+            !isChapterFree && "text-slate-500 italic"
+          )}
+        >
+          {isChapterFree
+            ? "This chapter is free for preview"
+            : "This chapter is not free"}
+        </p>
       ) : (
-        <div className="mt-3">
+        <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(submitHandler)}>
               <FormField
                 control={form.control}
-                name="title"
-                rules={{ required: "Title is required" }}
+                name="isFree"
+                rules={{
+                  required: "Toggle to set this chaptert free for preview",
+                }}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-row items-start p-4 rounded-md space-x-3 space-y-0 border">
                     <FormControl>
-                      <Input
-                        disabled={isSubmitting}
-                        placeholder="e.g. Quantum physics"
-                        {...field}
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <div className="space-y-1 leading-none">
+                      <FormDescription>
+                        Check this box to make this chapter free for preview
+                      </FormDescription>
+                    </div>
                   </FormItem>
                 )}
               />
@@ -90,10 +107,10 @@ const ChapterTitleForm = ({
               </Button>
             </form>
           </Form>
-        </div>
+        </>
       )}
     </div>
   );
 };
 
-export default ChapterTitleForm;
+export default ChapterAccess;

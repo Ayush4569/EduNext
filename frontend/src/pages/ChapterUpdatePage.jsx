@@ -1,11 +1,13 @@
+import ChapterAccess from "@/components/ChapterAccess";
+import ChapterDescriptionForm from "@/components/ChapterDescriptionForm";
 import ChapterTitleForm from "@/components/ChapterTitleForm";
 import axios from "axios";
-import { ArrowLeft, LayoutDashboard,ListCheck } from "lucide-react";
+import { ArrowLeft, LayoutDashboard,Eye } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams, useNavigate,Link } from "react-router-dom";
 
-const ChapterUpdateForm = () => {
+const ChapterUpdatePage = () => {
   const { courseId, chapterId } = useParams();
   const [chapter, setChapter] = useState(null);
   const navigate = useNavigate();
@@ -33,10 +35,10 @@ const ChapterUpdateForm = () => {
     isValidChapter();
   }, []);
 
-  
   if(!isValidCourseChapter){
     navigate(`/teacher/courses/${courseId}`)
   }
+ 
   console.log(chapter);
   const requiredFields = [
     chapter?.title,
@@ -58,7 +60,7 @@ const ChapterUpdateForm = () => {
           Complete all fields ({completedFields?.length}/{requiredFields?.length})
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-14">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         <div>
           <div className="flex items-center gap-x-2">
             <div className="bg-sky-100 h-12 w-12 p-3 rounded-full flex items-center justify-center">
@@ -74,7 +76,29 @@ const ChapterUpdateForm = () => {
               chapterTitle={chapter?.title}
               courseId={courseId}
             />
+            <ChapterDescriptionForm
+             setChapter={setChapter}
+             chapterId={chapterId}
+             chapterDescription={chapter?.content}
+             courseId={courseId}
+            />
           </div>
+
+          <div>
+          <div className="flex items-center gap-x-2 my-4 ">
+            <div className="bg-sky-100 h-12 w-12 p-3 rounded-full flex items-center justify-center">
+              <Eye className="h-9 w-9 object-cover" />
+            </div>
+            <h2 className="text-xl">Access Settings</h2>
+          </div>
+          <ChapterAccess
+          setChapter={setChapter}
+          chapterId={chapterId}
+           isChapterFree={chapter?.isFree}
+          courseId={courseId}
+          />
+          </div>
+
         </div>
 
         {/* <div className="space-y-6">
@@ -124,4 +148,4 @@ const ChapterUpdateForm = () => {
   );
 };
 
-export default ChapterUpdateForm;
+export default ChapterUpdatePage;

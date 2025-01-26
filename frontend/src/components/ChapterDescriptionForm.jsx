@@ -1,22 +1,24 @@
 import { useState } from "react";
-import { Pencil } from "lucide-react";
+import { Pencil,Loader2 } from "lucide-react";
 import { Form, FormField, FormControl, FormMessage, FormItem } from "./ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import axios from "axios";
 import toast from "react-hot-toast";
+import RTE from "./ui/RTE";
+import parse from "html-react-parser"
 
-const ChapterTitleForm = ({
-  chapterTitle,
+const ChapterDescriptionForm = ({
+  chapterDescription,
   courseId,
   setChapter,
   chapterId,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [editorLoading, setEditorLoading] = useState(true);
   const form = useForm({
     defaultValues: {
-      title: "",
+      content: "",
     },
   });
   const { isValid, isSubmitting } = form.formState;
@@ -27,16 +29,18 @@ const ChapterTitleForm = ({
       const response = await axios.patch(
         `${
           import.meta.env.VITE_BASEURL
-        }/courses/${courseId}/chapters/${chapterId}/editTitle`,
+        }/courses/${courseId}/chapters/${chapterId}/editDescription`,
         editedData,
         { withCredentials: true }
       );
-      console.log(response);
       if (response.statusText === "OK" || response.status === 200) {
-        setChapter((prev) => ({ ...prev, title: response.data.title }));
+        setChapter((prev) => ({
+          ...prev,
+          content: response.data.content,
+        }));
         toggleEdit();
         reset();
-        toast.success(response?.data?.message || "chapter title updated");
+        toast.success(response?.data?.message || "chapter content updated");
       }
     } catch (error) {
       console.log(error);
@@ -44,38 +48,45 @@ const ChapterTitleForm = ({
     }
   };
   return (
-    <div className="bg-slate-100 p-4 border rounded-md mt-4">
+    <div className="bg-slate-100 p-4 border rounded-md mt-6">
       <div className="flex items-center justify-between font-medium">
-        <h2 className="text-base ">Chapter title</h2>
+        <h2 className="text-base ">Chapter description</h2>
         <Button variant="ghost" onClick={() => toggleEdit()}>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4" />
-              <span className="text-base">Edit title</span>
+              <span className="text-base">Edit description</span>
             </>
           )}
         </Button>
       </div>
       {!isEditing ? (
-        <p>{chapterTitle}</p>
+        chapterDescription ? (
+          <div className="mt-2 w-full">
+              {parse(chapterDescription)}
+          </div>
+        ) : (
+         <p className="text-base text-slate-500 text-italic mt-2">No description</p>
+        )
       ) : (
-        <div className="mt-3">
+        <div className="mt-3 w-full">
+          {editorLoading && (
+             <div className="w-full absolute top-0 right-0 h-full flex items-center justify-center bg-slate-500/20 rounded-md">
+             <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
+           </div>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(submitHandler)}>
               <FormField
                 control={form.control}
-                name="title"
-                rules={{ required: "Title is required" }}
+                name="content"
+                rules={{ required: "Content is required" }}
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        disabled={isSubmitting}
-                        placeholder="e.g. Quantum physics"
-                        {...field}
-                      />
+                      <RTE setEditorLoading={setEditorLoading} value={field.value} onChange={field.onChange} initialValue={chapterDescription}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -96,4 +107,4 @@ const ChapterTitleForm = ({
   );
 };
 
-export default ChapterTitleForm;
+export default ChapterDescriptionForm;

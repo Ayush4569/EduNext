@@ -1,64 +1,78 @@
 import React, { useState } from "react";
-import {DragDropContext,Draggable,Droppable} from "@hello-pangea/dnd"
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
-import { Badge } from './ui/badge';
-import { Grip ,Pencil} from "lucide-react";
+import { Badge } from "./ui/badge";
+import { Grip, Pencil } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const ChapterList = ({ initialChapters,setCourse,courseId,setIsUpdating }) => {
+const ChapterList = ({
+  initialChapters,
+  setCourse,
+  courseId,
+  setIsUpdating,
+}) => {
   const [chapters, setChapters] = useState(initialChapters);
-  const navigate = useNavigate()
-  const onDragEnd = async(result) => {
-    if(!result.destination) return;
-    setIsUpdating(true)
+  const navigate = useNavigate();
+  const onDragEnd = async (result) => {
+    if (!result.destination) return;
+    setIsUpdating(true);
     const chapterOrder = Array.from(chapters);
-    const [displacedChapter] = chapterOrder.splice(result.source.index,1);
-    chapterOrder.splice(result.destination.index,0,displacedChapter)
-    setChapters(chapterOrder)
+    const [displacedChapter] = chapterOrder.splice(result.source.index, 1);
+    chapterOrder.splice(result.destination.index, 0, displacedChapter);
+    setChapters(chapterOrder);
     try {
-      const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters/reorder`, {
-        chapters: chapterOrder
-      }, {
-        withCredentials: true
-      });
+      const response = await axios.patch(
+        `${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters/reorder`,
+        {
+          chapters: chapterOrder,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.statusText === "OK" || response.status === 200) {
-        setCourse((prev) => ({ ...prev, chapters: response.data.reorderedChapters }));
+        setCourse((prev) => ({
+          ...prev,
+          chapters: response.data.reorderedChapters,
+        }));
         toast.success(response?.data?.message || "Chapter reordered");
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
       console.log(error);
-    } finally{
-      setIsUpdating(false)
+    } finally {
+      setIsUpdating(false);
     }
-    }
+  };
   const onEdit = (chapterId) => {
-   return navigate(`/teacher/courses/${courseId}/chapter/${chapterId}/editChapter`)
-  }
+    return navigate(
+      `/teacher/courses/${courseId}/chapter/${chapterId}/editChapter`
+    );
+  };
 
-  
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-    <Droppable droppableId="chapters">
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-          
-        >
-          {chapters?.map((chapter, index) => (
-            <Draggable key={chapter._id} draggableId={chapter._id} index={index}>
-                 {(provided) => (
+      <Droppable droppableId="chapters">
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            {chapters?.map((chapter, index) => (
+              <Draggable
+                key={chapter._id}
+                draggableId={chapter._id}
+                index={index}
+              >
+                {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     className={cn(
-                      "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-2 text-sm",
-                      chapter.isFree && "bg-sky-100 border-sky-200 text-sky-700"
+                      "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 rounded-md mb-3 text-sm",
+                      chapter.isFree &&
+                        "bg-sky-100 border-gray-500 text-sky-700"
                     )}
                   >
                     <div
@@ -66,7 +80,6 @@ const ChapterList = ({ initialChapters,setCourse,courseId,setIsUpdating }) => {
                         "px-3 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
                         chapter.isFree && "border-r-sky-200 hover:bg-sky-200"
                       )}
-                   
                     >
                       <Grip className="h-5 w-5" />
                     </div>
@@ -81,17 +94,20 @@ const ChapterList = ({ initialChapters,setCourse,courseId,setIsUpdating }) => {
                       >
                         {chapter.isPublished ? "Published" : "Draft"}
                       </Badge>
-                      <Pencil  onClick={()=>onEdit(chapter._id)} className="w-h4 h-4 cursor-pointer hover:opacity-75 transition" />
+                      <Pencil
+                        onClick={() => onEdit(chapter._id)}
+                        className="w-h4 h-4  hover:opacity-75 transition"
+                      />
                     </div>
                   </div>
                 )}
-            </Draggable>
-          ))}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
-  </DragDropContext>
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 };
 

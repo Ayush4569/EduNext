@@ -1,11 +1,10 @@
 import { useRef, useState } from "react";
-import { ImageIcon, Pencil } from "lucide-react";
+import { ImageIcon, Pencil,Loader2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "./ui/button";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ProgressBar } from "react-loader-spinner";
 
 const ImageForm = ({ courseId, courseImage,setCourse }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -70,7 +69,7 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
         <div className="mt-3">
           {loading ? (
            <div className="h-60 flex items-center justify-center">
-            <ProgressBar height={120} width={120}/>
+            <Loader2 className="h-14 w-14 animate-spin text-cyan-700"/>
            </div>
           ):
           (

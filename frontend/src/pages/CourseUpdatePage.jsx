@@ -13,7 +13,7 @@ import CategoryForm from "@/components/CategoryForm";
 import PriceForm from "@/components/PriceForm";
 import AttachmentsForm from "@/components/AttachmentsForm";
 import ChapterForm from "@/components/ChapterForm";
-const CoursesForm = () => {
+const CourseUpdatePage = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const { courseId } = useParams();
@@ -105,4 +105,4 @@ const CoursesForm = () => {
   );
 };
 
-export default CoursesForm;
+export default CourseUpdatePage;

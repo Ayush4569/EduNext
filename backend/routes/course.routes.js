@@ -13,6 +13,9 @@ import {
   createChapter,
   reorderChapters,
   getCourseChapter,
+  editChapterTitle,
+  editChapterDescription,
+  editChapterAccess
 } from "../controllers/course.controller.js";
 import { authInstructor } from "../middlewares/auth.middleware.js";
 import { isCourseExist as courseValidator } from "../middlewares/courseValidator.middleware.js";
@@ -118,7 +121,29 @@ router.patch(
   ],
   authInstructor,
   courseValidator,
-  getCourseChapter
+  editChapterTitle
+)
+router.patch(
+  "/:courseId/chapters/:chapterId/editDescription",
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+    body("content").isString().withMessage("Description is required"),
+  ],
+  authInstructor,
+  courseValidator,
+  editChapterDescription
+)
+router.patch(
+  "/:courseId/chapters/:chapterId/editAccess",
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+    body("isFree").isBoolean().withMessage("Specify the access settings"),
+  ],
+  authInstructor,
+  courseValidator,
+  editChapterAccess
 )
 
 export default router;
