@@ -1,61 +1,77 @@
 import express from "express";
-import { body, param } from "express-validator";
-import {
-  createChapter,
-  reorderChapters,
-  getCourseChapter,
-  editChapterTitle,
-  editChapterDescription,
-  editChapterAccess,
-  uploadChapterVideo,
-} from "../controllers/course.controller.js";
+import { param } from "express-validator";
 import { authInstructor } from "../middlewares/auth.middleware.js";
 import { isCourseExist as courseValidator } from "../middlewares/courseValidator.middleware.js";
 import { upload } from "../services/multer.service.js";
 
 const router = express.Router();
 
-const validateCourseId = param("courseId")
-  .isMongoId()
-  .withMessage("Invalid Course Id");
-const validateChapterId = param("chapterId")
-  .isMongoId()
-  .withMessage("Invalid Chapter Id");
+router.post(
+  "/:courseId/chapters",
+  authInstructor,
+  courseValidator,
+  createChapter
+);
 
-// Nested routes under courseId
-router.use("/:courseId", validateCourseId, authInstructor, courseValidator);
+router.patch(
+  "/:courseId/chapters/reorder",
+  authInstructor,
+  courseValidator,
+  reorderChapters
+);
 
-// Chapter CRUD routes
-router.post("/:courseId/chapters", createChapter);
-router.patch("/:courseId/chapters/reorder", reorderChapters);
 router.get(
   "/:courseId/chapters/:chapterId",
-  validateChapterId,
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+  ],
+  authInstructor,
+  courseValidator,
   getCourseChapter
 );
 router.patch(
   "/:courseId/chapters/:chapterId/editTitle",
-  validateChapterId,
-  body("title").isString().withMessage("Title is required"),
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+    body("title").isString().withMessage("Title is required"),
+  ],
+  authInstructor,
+  courseValidator,
   editChapterTitle
 );
 router.patch(
   "/:courseId/chapters/:chapterId/editDescription",
-  validateChapterId,
-  body("content").isString().withMessage("Description is required"),
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+    body("content").isString().withMessage("Description is required"),
+  ],
+  authInstructor,
+  courseValidator,
   editChapterDescription
 );
 router.patch(
   "/:courseId/chapters/:chapterId/editAccess",
-  validateChapterId,
-  body("isFree").isBoolean().withMessage("Specify the access settings"),
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+    body("isFree").isBoolean().withMessage("Specify the access settings"),
+  ],
+  authInstructor,
+  courseValidator,
   editChapterAccess
 );
-
 router.patch(
   "/:courseId/chapters/:chapterId/uploadVideo",
-  validateChapterId,
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+  ],
   upload.single("chapterVideo"),
+  authInstructor,
+  courseValidator,
   uploadChapterVideo
 );
 
