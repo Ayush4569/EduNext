@@ -71,7 +71,7 @@ const ChapterDescriptionForm = ({
          <p className="text-base text-slate-500 text-italic mt-2">No description</p>
         )
       ) : (
-        <div className="mt-3 w-full">
+        <div className="relative mt-3 w-full">
           {editorLoading && (
              <div className="w-full absolute top-0 right-0 h-full flex items-center justify-center bg-slate-500/20 rounded-md">
              <Loader2 className="h-6 w-6 animate-spin text-sky-700" />

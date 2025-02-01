@@ -6,6 +6,7 @@ import { connectDB } from "./database/db.js";
 import studentRoutes from "./routes/student.routes.js"
 import instructorRoutes from "./routes/instructor.routes.js"
 import courseRoutes from "./routes/course.routes.js"
+import muxRoutes from "./routes/mux.routes.js"
 import path from "path";
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use('/students',studentRoutes)
 app.use('/instructors',instructorRoutes)
 app.use('/courses',courseRoutes)
+app.use('/api/mux',muxRoutes)
 
 // server
 app.listen(4000, () => {

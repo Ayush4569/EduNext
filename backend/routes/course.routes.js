@@ -15,7 +15,8 @@ import {
   getCourseChapter,
   editChapterTitle,
   editChapterDescription,
-  editChapterAccess
+  editChapterAccess,
+  uploadChapterVideo
 } from "../controllers/course.controller.js";
 import { authInstructor } from "../middlewares/auth.middleware.js";
 import { isCourseExist as courseValidator } from "../middlewares/courseValidator.middleware.js";
@@ -144,6 +145,17 @@ router.patch(
   authInstructor,
   courseValidator,
   editChapterAccess
+)
+router.patch(
+  "/:courseId/chapters/:chapterId/uploadVideo",
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+  ],
+  upload.single("chapterVideo"),
+  authInstructor,
+  courseValidator,
+  uploadChapterVideo
 )
 
 export default router;

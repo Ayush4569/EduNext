@@ -1,8 +1,9 @@
 import ChapterAccess from "@/components/ChapterAccess";
 import ChapterDescriptionForm from "@/components/ChapterDescriptionForm";
 import ChapterTitleForm from "@/components/ChapterTitleForm";
+import ChapterVideo from "@/components/ChapterVideo";
 import axios from "axios";
-import { ArrowLeft, LayoutDashboard,Eye } from "lucide-react";
+import { ArrowLeft, LayoutDashboard,Eye, ListCheck,Video } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useParams, useNavigate,Link } from "react-router-dom";
@@ -39,7 +40,6 @@ const ChapterUpdatePage = () => {
     navigate(`/teacher/courses/${courseId}`)
   }
  
-  console.log(chapter);
   const requiredFields = [
     chapter?.title,
     chapter?.video,
@@ -101,48 +101,23 @@ const ChapterUpdatePage = () => {
 
         </div>
 
-        {/* <div className="space-y-6">
+        <div className="space-y-6">
           <div className="flex items-center gap-x-2">
             <div className="bg-sky-100 h-12 w-12 p-3 rounded-full flex items-center justify-center">
-              <ListCheck className="h-9 w-9 object-cover" />
+              <Video className="h-9 w-9 object-cover" />
             </div>
-            <h2 className="text-xl">Course chapters</h2>
+            <h2 className="text-xl">Add a video</h2>
           </div>
           <div>
-            <ChapterForm
-              setCourse={setCourse}
-              courseId={course?._id}
-              courseChapters={course?.chapters}
+            <ChapterVideo
+              setChapter={setChapter}
+              chapterId={chapterId}
+              chapterVideo={chapter?.video}
+              courseId={courseId}
             />
           </div>
-
-          <div className="flex items-center gap-x-2 ">
-            <div className="bg-sky-100 h-12 w-12 p-3 rounded-full flex items-center justify-center">
-              <CircleDollarSign className="h-9 w-9 object-cover" />
-            </div>
-            <h2 className="text-xl">Sell your course</h2>
-          </div>
-          <div>
-            <PriceForm
-              setCourse={setCourse}
-              courseId={course?._id}
-              coursePrice={course?.price}
-            />
-          </div>
-          <div>
-            <div className="flex items-center gap-x-2 ">
-              <div className="bg-sky-100 h-12 w-12 p-3 rounded-full flex items-center justify-center">
-                <File className="h-9 w-9 object-cover" />
-              </div>
-              <h2 className="text-xl">Resources & Attachments</h2>
-            </div>
-            <AttachmentsForm
-              setCourse={setCourse}
-              courseId={course?._id}
-              courseAttachments={course?.attachments}
-            />
-          </div>
-        </div> */}
+        
+        </div>
       </div>
     </div>
   );

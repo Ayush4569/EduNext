@@ -6,7 +6,7 @@ import {
   deleteFromCloudinary,
   uploadToCloudinary,
 } from "../services/cloudinary.services.js";
-import mongoose from "mongoose";
+import { generateMuxUploadUrl } from "../services/mux.services.js";
 
 const createCourse = async (req, res) => {
   const errors = validationResult(req);
@@ -81,16 +81,16 @@ const updateCourseDescription = async (req, res) => {
 
 const updateCourseImage = async (req, res) => {
   const { courseId } = req.params;
-  const courseImage = req.file;
+  const coverImage = req.file;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
   }
-  if (!courseImage) {
+  if (!coverImage) {
     return res.status(400).json({ message: "upload an image" });
   }
   try {
-    const uploadedPhotoUrl = await uploadToCloudinary(req.file.path);
+    const uploadedPhotoUrl = await uploadToCloudinary(coverImage.path);
     if (!uploadedPhotoUrl) {
       return res.status(400).json({ message: "falied to upload image" });
     }
@@ -326,15 +326,14 @@ const editChapterTitle = async (req, res) => {
       { new: true }
     );
     if (updatedChapterTitle) {
-        return res.status(200).json({
-          message: "Chapter title updated successfully",
-          title: updatedChapterTitle.title,
-        });
+      return res.status(200).json({
+        message: "Chapter title updated successfully",
+        title: updatedChapterTitle.title,
+      });
     }
-    
   } catch (error) {
     console.error("Error updating chapter title:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 const editChapterDescription = async (req, res) => {
@@ -361,15 +360,14 @@ const editChapterDescription = async (req, res) => {
       { new: true }
     );
     if (updatedChapterDescription) {
-        return res.status(200).json({
-          message: "Chapter content updated successfully",
-          content: updatedChapterDescription.content,
-        });
+      return res.status(200).json({
+        message: "Chapter content updated successfully",
+        content: updatedChapterDescription.content,
+      });
     }
-    
   } catch (error) {
     console.error("Error updating chapter content:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 const editChapterAccess = async (req, res) => {
@@ -396,16 +394,65 @@ const editChapterAccess = async (req, res) => {
       { new: true }
     );
     if (updatedChapterAccess) {
-        return res.status(200).json({
-          message: "Access setting updated successfully",
-          isFree: updatedChapterAccess.isFree,
-        });
+      return res.status(200).json({
+        message: "Access setting updated successfully",
+        isFree: updatedChapterAccess.isFree,
+      });
     }
-    
   } catch (error) {
     console.error("Error updating chapter access:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
+};
+
+const uploadChapterVideo = async (req, res) => {
+  const { courseId, chapterId } = req.params;
+  const chapterVideo = req.file;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  if (!chapterVideo) {
+    return res.status(400).json({ message: "Upload a video" });
+  }
+  const isValidCourseChapter = await Course.findOne({
+    _id: courseId,
+    author: req.instructor,
+    chapters: chapterId,
+  });
+  if (!isValidCourseChapter) {
+    return res
+      .status(400)
+      .json({ message: "This chapter does not belong to this course" });
+  }
+
+  // try {
+  //   const response = await uploadToMux();
+  //   if (!response) {
+  //     return res.status(400).json({ message: "Failed to upload video" });
+  //   }
+
+  //   await Chapter.findOneAndUpdate(
+  //     {
+  //       _id: chapterId,
+  //     },
+  //     {
+  //       video:{
+  //         muxAssetId: response.data.id,
+  //         muxPlaybackId:  response.playback_ids[0].url,
+  //       }
+  //     }
+  //   );
+  //   return res
+  //     .status(200)
+  //     .json({
+  //       message: "Video uploaded successfully",
+  //       videoUrl: response.playback_ids[0].url,
+  //     });
+  // } catch (error) {
+  //   console.error("Error uploading video:", error);
+  //   return res.status(500).json({ message: "Internal Server Error" });
+  // }
 };
 export {
   createCourse,
@@ -422,5 +469,6 @@ export {
   getCourseChapter,
   editChapterTitle,
   editChapterDescription,
-  editChapterAccess
+  editChapterAccess,
+  uploadChapterVideo
 };

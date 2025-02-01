@@ -20,13 +20,13 @@ const chapterSchema = new mongoose.Schema(
       default: false,
     },
     video: {
-      type: String,
-      validate: {
-        validator: function (v) {
-          return /^https?:\/\/.+\..+/.test(v); // Validates URL
-        },
-        message: (props) => `${props.value} is not a valid URL!`,
+      muxAssetId: {
+        type: String,
       },
+      muxPlaybackId: {
+        type: String,
+      },
+      
     },
     progress: {
       type: String,

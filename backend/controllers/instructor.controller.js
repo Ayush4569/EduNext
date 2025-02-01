@@ -7,7 +7,6 @@ const registerInstructor = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { fullname, email, password, contact } = req.body;
-  console.log(password);
   const isInstructorExists = await Instructor.findOne({ email });
   if (isInstructorExists) {
     return res.status(400).json({ message: "Instructor already exist" });
