@@ -29,7 +29,7 @@ const ChapterDescriptionForm = ({
       const response = await axios.patch(
         `${
           import.meta.env.VITE_BASEURL
-        }/courses/${courseId}/chapters/${chapterId}/editDescription`,
+        }/api/v1/chapters/${courseId}/${chapterId}/editDescription`,
         editedData,
         { withCredentials: true }
       );

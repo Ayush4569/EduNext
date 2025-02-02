@@ -19,11 +19,10 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
   const [isEditing, setIsEditing] = useState(false);
   const form = useForm({
     defaultValues: {
-      isFree: Boolean(isChapterFree),
+      isFree: false,
     },
   });
   const { reset } = form;
-  const { isValid, isSubmitting } = form.formState;
   const toggleEdit = () => setIsEditing((current) => !current);
   const submitHandler = async (editedData) => {
     console.log(editedData);
@@ -31,14 +30,14 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
       const response = await axios.patch(
         `${
           import.meta.env.VITE_BASEURL
-        }/courses/${courseId}/chapters/${chapterId}/editAccess`,
+        }/api/v1/chapters/${courseId}/${chapterId}/editAccess`,
         editedData,
         { withCredentials: true }
       );
       if (response.statusText === "OK" || response.status === 200) {
-        setCourse((prev) => ({ ...prev, isFree: response.data.isFree }));
+        setChapter((prev) => ({ ...prev, isFree: response.data.isFree }));
         toggleEdit();
-        reset();
+        // reset();
         toast.success(response?.data?.message || "chapter access updated");
       }
     } catch (error) {
@@ -79,9 +78,6 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
               <FormField
                 control={form.control}
                 name="isFree"
-                rules={{
-                  required: "Toggle to set this chaptert free for preview",
-                }}
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start p-4 rounded-md space-x-3 space-y-0 border">
                     <FormControl>
@@ -101,7 +97,6 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
               <Button
                 type="submit"
                 className="mt-4 ml-2"
-                disabled={!isValid || isSubmitting}
               >
                 Save
               </Button>

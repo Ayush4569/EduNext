@@ -27,7 +27,7 @@ const ChapterTitleForm = ({
       const response = await axios.patch(
         `${
           import.meta.env.VITE_BASEURL
-        }/courses/${courseId}/chapters/${chapterId}/editTitle`,
+        }/api/v1/chapters/${courseId}/${chapterId}/editTitle`,
         editedData,
         { withCredentials: true }
       );

@@ -29,7 +29,7 @@ function StudentLogin() {
   const onSubmit = async(data) => {
 
     console.log("Form Data:", data);
-    const apiEndpoint =`${import.meta.env.VITE_BASEURL}/students/login`
+    const apiEndpoint =`${import.meta.env.VITE_BASEURL}/api/v1/students/login`
     try {
 
       const response = await axios.post(apiEndpoint,data)

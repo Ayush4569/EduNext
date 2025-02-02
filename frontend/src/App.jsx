@@ -6,10 +6,10 @@ import "@uploadthing/react/styles.css";
 import StudentSignup from "./pages/StudentSignup";
 import StudentLogin from "./pages/StudentLogin";
 import Layout from "./components/layout";
-import ErrorPage from "./pages/ErrorPage";
-import Searchpage from "./pages/SearchPage";
-import Teacherpage from "./pages/TeacherPage";
-import Teacheranalytics from "./pages/TeacherAnalytics";
+import ErrorPage from "./pages/Errorpage";
+import Searchpage from "./pages/Searchpage";
+import Teacherpage from "./pages/Teacherpage";
+import Teacheranalytics from "./pages/Teacheranalytics";
 import CreateCourses from "./pages/CreateCourses";
 import axios from "axios";
 import InstructorSignup from "./pages/InstructorSignup";
@@ -28,7 +28,7 @@ axios.defaults.withCredentials = true
     <Route path="/teacher/analytics" element={<Teacheranalytics/>} />  
     <Route path="/teacher/courses/create" element={<CreateCourses/>} />  
     <Route path="/teacher/courses/:courseId" element={<CourseUpdatePage/>} /> 
-    <Route path="/teacher/courses/:courseId/chapter/:chapterId/editChapter" element={<ChapterUpdatePage/>} /> 
+    <Route path="/teacher/courses/:courseId/:chapterId/editChapter" element={<ChapterUpdatePage/>} /> 
     </Route>
      <Route path="/signup" element={<StudentSignup/>}/>
      <Route path="/login" element={<StudentLogin/>}/>

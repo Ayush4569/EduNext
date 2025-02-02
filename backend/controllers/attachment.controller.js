@@ -1,5 +1,5 @@
-import { Attachment } from "../models/attachments.model";
-import { Course } from "../models/course.model";
+import { Attachment } from "../models/attachments.model.js";
+import { Course } from "../models/course.model.js";
 import {
   deleteFromCloudinary,
   uploadToCloudinary,

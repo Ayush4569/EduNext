@@ -16,15 +16,13 @@ const ChapterVideo = ({  chapterId, chapterVideo,courseId }) => {
 
   useEffect(() => {
     const getPlaybackId = async () => {
-      if (playbackId) return;
       setLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters/${chapterId}`, {
+        const response = await axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${chapterId}`, {
           withCredentials: true,
         });
         
         if(response.statusText == 'OK' && response.data){
-          console.log('getPlaybackId',response.data.chapter.video.muxPlaybackId);
           setPlaybackId(response.data.chapter.video.muxPlaybackId);
         }
       } catch (fetchplaybackIdError) {

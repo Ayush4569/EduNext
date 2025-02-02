@@ -1,78 +1,69 @@
 import express from "express";
-import { param } from "express-validator";
+import { param,body } from "express-validator";
 import { authInstructor } from "../middlewares/auth.middleware.js";
+import { chapterValidator } from "../middlewares/chapterValidator.middleware.js";
 import { isCourseExist as courseValidator } from "../middlewares/courseValidator.middleware.js";
-import { upload } from "../services/multer.service.js";
-
+import {
+  createChapter,
+  reorderChapters,
+  getCourseChapter,
+  editChapterAccess,
+  editChapterDescription,
+  editChapterTitle,
+} from "../controllers/chapter.controller.js";
 const router = express.Router();
 
+router.use("/:courseId/:chapterId", authInstructor, courseValidator,chapterValidator);
+
 router.post(
-  "/:courseId/chapters",
+  "/:courseId",
+  [body("title").isString().withMessage("Title is required")],
   authInstructor,
   courseValidator,
   createChapter
 );
 
 router.patch(
-  "/:courseId/chapters/reorder",
+  "/:courseId/reorder",
   authInstructor,
   courseValidator,
   reorderChapters
 );
 
 router.get(
-  "/:courseId/chapters/:chapterId",
+  "/:courseId/:chapterId",
   [
     param("courseId").isMongoId().withMessage("Course Id is required"),
     param("chapterId").isMongoId().withMessage("Chapter Id is required"),
   ],
-  authInstructor,
-  courseValidator,
   getCourseChapter
 );
 router.patch(
-  "/:courseId/chapters/:chapterId/editTitle",
+  "/:courseId/:chapterId/editTitle",
   [
     param("courseId").isMongoId().withMessage("Course Id is required"),
     param("chapterId").isMongoId().withMessage("Chapter Id is required"),
     body("title").isString().withMessage("Title is required"),
   ],
-  authInstructor,
-  courseValidator,
   editChapterTitle
 );
 router.patch(
-  "/:courseId/chapters/:chapterId/editDescription",
+  "/:courseId/:chapterId/editDescription",
   [
     param("courseId").isMongoId().withMessage("Course Id is required"),
     param("chapterId").isMongoId().withMessage("Chapter Id is required"),
     body("content").isString().withMessage("Description is required"),
   ],
-  authInstructor,
-  courseValidator,
   editChapterDescription
 );
 router.patch(
-  "/:courseId/chapters/:chapterId/editAccess",
+  "/:courseId/:chapterId/editAccess",
   [
     param("courseId").isMongoId().withMessage("Course Id is required"),
     param("chapterId").isMongoId().withMessage("Chapter Id is required"),
     body("isFree").isBoolean().withMessage("Specify the access settings"),
   ],
-  authInstructor,
-  courseValidator,
   editChapterAccess
-);
-router.patch(
-  "/:courseId/chapters/:chapterId/uploadVideo",
-  [
-    param("courseId").isMongoId().withMessage("Course Id is required"),
-    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
-  ],
-  upload.single("chapterVideo"),
-  authInstructor,
-  courseValidator,
-  uploadChapterVideo
 );
 
 export default router;

@@ -75,21 +75,11 @@ const getCourseChapter = async (req, res) => {
   return res.status(200).json({ chapter });
 };
 const editChapterTitle = async (req, res) => {
-  const { courseId, chapterId } = req.params;
+  const { chapterId } = req.params;
   const { title } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
-  }
-  const isValidCourseChapter = await Course.findOne({
-    _id: courseId,
-    author: req.instructor,
-    chapters: chapterId,
-  });
-  if (!isValidCourseChapter) {
-    return res
-      .status(400)
-      .json({ message: "This chapter does not belong to this course" });
   }
   try {
     const updatedChapterTitle = await Chapter.findOneAndUpdate(
@@ -109,22 +99,13 @@ const editChapterTitle = async (req, res) => {
   }
 };
 const editChapterDescription = async (req, res) => {
-  const { courseId, chapterId } = req.params;
+  const {  chapterId } = req.params;
   const { content } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
   }
-  const isValidCourseChapter = await Course.findOne({
-    _id: courseId,
-    author: req.instructor,
-    chapters: chapterId,
-  });
-  if (!isValidCourseChapter) {
-    return res
-      .status(400)
-      .json({ message: "This chapter does not belong to this course" });
-  }
+
   try {
     const updatedChapterDescription = await Chapter.findOneAndUpdate(
       { _id: chapterId },
@@ -143,21 +124,11 @@ const editChapterDescription = async (req, res) => {
   }
 };
 const editChapterAccess = async (req, res) => {
-  const { courseId, chapterId } = req.params;
+  const {  chapterId } = req.params;
   const { isFree } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
-  }
-  const isValidCourseChapter = await Course.findOne({
-    _id: courseId,
-    author: req.instructor,
-    chapters: chapterId,
-  });
-  if (!isValidCourseChapter) {
-    return res
-      .status(400)
-      .json({ message: "This chapter does not belong to this course" });
   }
   try {
     const updatedChapterAccess = await Chapter.findOneAndUpdate(

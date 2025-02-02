@@ -10,7 +10,7 @@ export const StudentContextProvider = ({children})=>{
     const [loading,setLoading] = useState(true)
 
    useEffect(() => {
-    axios.get(`${import.meta.env.VITE_BASEURL}/students/profile`,{
+    axios.get(`${import.meta.env.VITE_BASEURL}/api/v1students/profile`,{
         withCredentials:true
     })
          .then((response)=>{

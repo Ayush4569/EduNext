@@ -19,7 +19,7 @@ const ChapterUpdatePage = () => {
         const response = await axios.get(
           `${
             import.meta.env.VITE_BASEURL
-          }/courses/${courseId}/chapters/${chapterId}`,
+          }/api/v1/chapters/${courseId}/${chapterId}`,
           {
             withCredentials: true,
           }
@@ -29,7 +29,7 @@ const ChapterUpdatePage = () => {
           setIsValidCourseChapter(true);
         }
       } catch (error) {
-        toast.error(error?.response.data.message || error.message);
+        toast.error(error.response?.data.message || error.message);
         console.log(error);
       }
     };

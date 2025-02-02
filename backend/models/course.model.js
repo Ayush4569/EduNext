@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 import { Chapter } from "./chapters.model.js";
 import { Attachment } from "./attachments.model.js";
-
 const courseSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       required: [true, "Course title is required"],
     },
-
+    slug:{
+      type: String,
+      unique: true,
+    },
     description: {
       type: String,
     },
@@ -64,6 +66,13 @@ const courseSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+courseSchema.pre('save', function(next){
+  if(this.isModified('title')){
+    this.slug = this.title.toLowerCase().split(' ').join('-');
+  }
+  next();
+})
 
 courseSchema.pre('findOneAndDelete',async function(next){
   const courseId = this.getQuery()._id

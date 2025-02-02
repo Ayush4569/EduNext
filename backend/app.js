@@ -6,6 +6,8 @@ import { connectDB } from "./database/db.js";
 import studentRoutes from "./routes/student.routes.js"
 import instructorRoutes from "./routes/instructor.routes.js"
 import courseRoutes from "./routes/course.routes.js"
+import chapterRoutes from "./routes/chapter.routes.js"
+import attachmentsRoutes from "./routes/attachments.routes.js"
 import muxRoutes from "./routes/mux.routes.js"
 import path from "path";
 dotenv.config();
@@ -24,9 +26,11 @@ app.use(express.static(path.resolve("./public")));
 app.get("/", (req, res) => {
   res.send("hello world");
 });
-app.use('/students',studentRoutes)
-app.use('/instructors',instructorRoutes)
-app.use('/courses',courseRoutes)
+app.use('/api/v1/students',studentRoutes)
+app.use('/api/v1/instructors',instructorRoutes)
+app.use('/api/v1/courses',courseRoutes)
+app.use('/api/v1/chapters',chapterRoutes)
+app.use('/api/v1/attachments',attachmentsRoutes)
 app.use('/api/mux',muxRoutes)
 
 // server

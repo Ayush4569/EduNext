@@ -25,7 +25,6 @@ function StudentSignup() {
       email: "",
       password: "",
       contact:"",
-      role:""
     },
   });
 
@@ -34,7 +33,7 @@ function StudentSignup() {
  const onSubmit = async (data) => {
   console.log("Form Data:", data);
 
-  const apiEndpoint = `${import.meta.env.VITE_BASEURL}/students/register`
+  const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/students/register`
 
   try {
     const response = await axios.post(apiEndpoint, data);

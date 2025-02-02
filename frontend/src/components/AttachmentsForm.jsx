@@ -24,7 +24,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
     try {
       setLoading(true)
       const response = await axios.post(
-        `${import.meta.env.VITE_BASEURL}/courses/${courseId}/attachments`,
+        `${import.meta.env.VITE_BASEURL}/api/v1/attachments/${courseId}`,
         formData,
         {
           withCredentials: true,
@@ -46,7 +46,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
   };
       const deleteAttachment = async(attachmentId)=>{
        try {
-        const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/courses/${courseId}/attachments/${attachmentId}`)
+        const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${attachmentId}`)
         if(response.statusText === 'OK' && response.status === 200){
           setCourse((prev)=>({...prev,attachments:response.data.attachments}))
           toast.success(response.data.message || 'Attachment removed')

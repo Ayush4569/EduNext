@@ -24,7 +24,7 @@ const ChapterList = ({
     setChapters(chapterOrder);
     try {
       const response = await axios.patch(
-        `${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters/reorder`,
+        `${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/reorder`,
         {
           chapters: chapterOrder,
         },
@@ -49,7 +49,7 @@ const ChapterList = ({
   };
   const onEdit = (chapterId) => {
     return navigate(
-      `/teacher/courses/${courseId}/chapter/${chapterId}/editChapter`
+      `/teacher/courses/${courseId}/${chapterId}/editChapter`
     );
   };
 

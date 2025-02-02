@@ -10,7 +10,7 @@ const Layout = () => {
       <div className='md:pl-56 h-[80px] fixed inset-y-0 w-full z-50'>
       <Navbar/>
       </div>
-        <div className=' xxs:hidden md:flex h-full w-56 flex-col fixed z-50 inset-y-0  border border-red-800'>
+        <div className=' xxs:hidden md:flex h-full w-56 flex-col fixed z-50 inset-y-0  border'>
         <Sidebar/>
         </div>
         <div className='md:pl-56 pt-[80px] w-full'>

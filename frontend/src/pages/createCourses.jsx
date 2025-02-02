@@ -24,7 +24,7 @@ const CreateCourses = () => {
     const navigate = useNavigate()
     const submitHandler = async(data)=>{
        try {
-        const res = await axios.post(`${import.meta.env.VITE_BASEURL}/courses/create`,data,{withCredentials:true})
+        const res = await axios.post(`${import.meta.env.VITE_BASEURL}/api/v1/courses/create`,data,{withCredentials:true})
         console.log(res.data);
         if(res.statusText == 'OK'){
            navigate(`/teacher/courses/${res.data._id}`)

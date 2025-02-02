@@ -24,7 +24,7 @@ const ChapterForm = ({ courseChapters, courseId, setCourse }) => {
   const submitHandler = async (editedData) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASEURL}/courses/${courseId}/chapters`,
+        `${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}`,
         editedData,
         { withCredentials: true }
       );

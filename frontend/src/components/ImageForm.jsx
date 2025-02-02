@@ -19,7 +19,7 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
     try {
       setLoading(true)
       const response = await axios.patch(
-        `${import.meta.env.VITE_BASEURL}/courses/editCoverImage/${courseId}`,
+        `${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}/editCoverImage`,
         formData,
         {
           withCredentials: true,

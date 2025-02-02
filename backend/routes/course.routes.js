@@ -14,6 +14,9 @@ import { isCourseExist as courseValidator } from "../middlewares/courseValidator
 import { upload } from "../services/multer.service.js";
 
 const router = express.Router();
+
+router.use("/:courseId", authInstructor, courseValidator);
+
 router.post(
   "/create",
   [body("title").isString().withMessage("Title is required")],
@@ -30,34 +33,28 @@ router.get(
 
 router.patch(
   "/:courseId/editTitle",
-  authInstructor,
-  courseValidator,
+  [body("title").isString().withMessage("Title is required")],
   updateCourseTitle
 );
 router.patch(
   "/:courseId/editDescription",
-  authInstructor,
-  courseValidator,
+  [body("description").isString().withMessage("Title is required")],
   updateCourseDescription
 );
 router.patch(
   "/:courseId/editCategory",
-  authInstructor,
-  courseValidator,
+  [body("category").isString().withMessage("Title is required")],
   updateCourseCategory
 );
 router.patch(
   "/:courseId/editPrice",
-  authInstructor,
-  courseValidator,
+  [body("price").isString().withMessage("Title is required")],
   updateCoursePrice
 );
 
 router.patch(
   "/:courseId/editCoverImage",
   upload.single("coverImage"),
-  authInstructor,
-  courseValidator,
   updateCourseImage
 );
 

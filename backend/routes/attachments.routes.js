@@ -13,12 +13,12 @@ const router = express.Router();
 router.use("/:courseId", authInstructor, courseValidator);
 
 router.post(
-  "/:courseId/attachments",
+  "/:courseId",
   upload.array("attachments", 5),
   addAttachments
 );
 router.delete(
-  "/:courseId/attachments/:attachmentId",
+  "/:courseId/:attachmentId",
   [param("attachmentId").isMongoId().withMessage("Invalid Attachment Id")],
   removeAttachment
 );

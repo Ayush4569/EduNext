@@ -22,7 +22,7 @@ const CourseUpdatePage = () => {
     return <Navigate to="/" />;
   }
   useEffect(() => {
-   axios.get(`${import.meta.env.VITE_BASEURL}/courses/${courseId}`,{withCredentials:true})
+   axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}`,{withCredentials:true})
          .then((response)=>{
           setCourse(response.data)
          })
