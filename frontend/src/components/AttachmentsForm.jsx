@@ -1,10 +1,9 @@
 import {useState,useRef} from 'react'
-import { File,X,PlusCircle } from 'lucide-react';
+import { File,X,PlusCircle, Loader2 } from 'lucide-react';
 import { Button } from "./ui/button";
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
-import { ProgressBar } from 'react-loader-spinner';
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -95,7 +94,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
       <div className="mt-3">
         {loading ? (
          <div className="h-60 flex items-center justify-center">
-          <ProgressBar height={120} width={120}/>
+          <Loader2 height={120} width={120}/>
          </div>
         ):
         (

@@ -27,8 +27,6 @@ function InstructorLogin() {
   const {setInstructor} = useInstructor()
 
   const onSubmit = async(data) => {
-
-    console.log("Form Data:", data);
     const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/instructors/login`;
     try {
 
@@ -36,7 +34,6 @@ function InstructorLogin() {
       if(response.statusText === 'OK'){
           setInstructor(response.data)
           navigate('/')
-     
         toast.success("Login successfull")
       }
      } catch (error) {

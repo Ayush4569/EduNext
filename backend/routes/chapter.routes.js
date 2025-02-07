@@ -1,5 +1,5 @@
 import express from "express";
-import { param,body } from "express-validator";
+import { param, body } from "express-validator";
 import { authInstructor } from "../middlewares/auth.middleware.js";
 import { chapterValidator } from "../middlewares/chapterValidator.middleware.js";
 import { isCourseExist as courseValidator } from "../middlewares/courseValidator.middleware.js";
@@ -7,13 +7,20 @@ import {
   createChapter,
   reorderChapters,
   getCourseChapter,
-  editChapterAccess,
   editChapterDescription,
   editChapterTitle,
+  toggleChapterAccess,
+  toggleChapterPublication,
+  deleteChapter,
 } from "../controllers/chapter.controller.js";
 const router = express.Router();
 
-router.use("/:courseId/:chapterId", authInstructor, courseValidator,chapterValidator);
+router.use(
+  "/:courseId/:chapterId",
+  authInstructor,
+  courseValidator,
+  chapterValidator
+);
 
 router.post(
   "/:courseId",
@@ -63,7 +70,22 @@ router.patch(
     param("chapterId").isMongoId().withMessage("Chapter Id is required"),
     body("isFree").isBoolean().withMessage("Specify the access settings"),
   ],
-  editChapterAccess
+  toggleChapterAccess
 );
-
+router.patch(
+  "/:courseId/:chapterId/editPublication",
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+  ],
+  toggleChapterPublication
+);
+router.delete(
+  "/:courseId/:chapterId",
+  [
+    param("courseId").isMongoId().withMessage("Course Id is required"),
+    param("chapterId").isMongoId().withMessage("Chapter Id is required"),
+  ],
+  deleteChapter
+);
 export default router;

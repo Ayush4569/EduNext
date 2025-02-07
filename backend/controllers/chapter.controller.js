@@ -40,7 +40,13 @@ const reorderChapters = async (req, res) => {
   try {
     const course = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
-      { chapters }
+      [
+        {
+          $set: {
+            chapters,
+          },
+        },
+      ]
     ).populate("chapters");
     return res.status(200).json({
       message: "chapter reordered",
@@ -51,12 +57,9 @@ const reorderChapters = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const getCourseChapter = async (req, res) => {
   const { courseId, chapterId } = req.params;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ message: errors.array() });
-  }
   const isValidCourseChapter = await Course.findOne({
     _id: courseId,
     author: req.instructor,
@@ -74,6 +77,7 @@ const getCourseChapter = async (req, res) => {
   }
   return res.status(200).json({ chapter });
 };
+
 const editChapterTitle = async (req, res) => {
   const { chapterId } = req.params;
   const { title } = req.body;
@@ -98,8 +102,9 @@ const editChapterTitle = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 const editChapterDescription = async (req, res) => {
-  const {  chapterId } = req.params;
+  const { chapterId } = req.params;
   const { content } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -123,17 +128,21 @@ const editChapterDescription = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-const editChapterAccess = async (req, res) => {
-  const {  chapterId } = req.params;
-  const { isFree } = req.body;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ message: errors.array() });
-  }
+
+const toggleChapterAccess = async (req, res) => {
+  const { chapterId } = req.params;
   try {
     const updatedChapterAccess = await Chapter.findOneAndUpdate(
       { _id: chapterId },
-      { isFree },
+      [
+        {
+          $set: {
+            isFree: {
+              $not: ["$isFree"],
+            },
+          },
+        },
+      ],
       { new: true }
     );
     if (updatedChapterAccess) {
@@ -147,11 +156,73 @@ const editChapterAccess = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const toggleChapterPublication = async (req, res) => {
+  const { chapterId } = req.params;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  try {
+    const updatedChapterState = await Chapter.findOneAndUpdate(
+      { _id: chapterId },
+      [
+        {
+          $set: {
+            isPublished: {
+              $not: ["$isPublished"],
+            },
+          },
+        },
+      ],
+
+      { new: true }
+    );
+    if (!updatedChapterState) {
+      return res.status(404).json({ message: "Error while updating the chapter publication state" });
+    }
+    return res.status(200).json({
+      message: updatedChapterState.isPublished
+        ? "Chapter published"
+        : "Chapter unpublished",
+      isPublished: updatedChapterState.isPublished,
+    });
+  } catch (error) {
+    console.error("Error updating chapter publication:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const deleteChapter = async (req, res) => {
+  const { chapterId, courseId } = req.params;
+
+  try {
+    const deletedChapter = await Chapter.findByIdAndDelete(chapterId);
+
+    if (!deletedChapter) {
+      return res.status(404).json({ message: "Chapter not found" });
+    }
+   
+    const updatedCourse = await Course.findByIdAndUpdate(courseId, { $pull: { chapters: chapterId }},{new:true})
+    if (!updatedCourse) {
+      return res.status(400).json({ message: "Error while deleting the chapter from course" });
+    }
+    return res.status(200).json({ message: "Chapter deleted successfully" });
+
+  } catch (error) {
+    console.error("Error deleting chapter:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
 export {
   createChapter,
   reorderChapters,
   getCourseChapter,
   editChapterTitle,
   editChapterDescription,
-  editChapterAccess,
+  toggleChapterAccess,
+  toggleChapterPublication,
+  deleteChapter
 };

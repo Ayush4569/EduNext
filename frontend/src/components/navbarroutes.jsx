@@ -38,7 +38,7 @@ const Navbarroutes = () => {
             <LogOut className="h-4 w-4 mr-2" />
             Logout
           </Button>
-          <Button variant="outline">
+          <Button variant="ghost">
             {instructor ? instructor?.email : student?.email}
           </Button>
         </>

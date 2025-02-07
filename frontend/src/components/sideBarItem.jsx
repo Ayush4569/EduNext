@@ -5,9 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const SideBarItem = ({ icon:Icon, label, href }) => {
   const location = useLocation();
   const navigate = useNavigate()
-
-  
-  const isActive = location.pathname === href || location.pathname.includes(href)
+  const isActive = location.pathname === href 
   return (
     <button
        onClick={()=>navigate(href)}

@@ -31,7 +31,6 @@ function InstructorSignup() {
   const navigate = useNavigate()
  const {setInstructor} = useInstructor()
  const onSubmit = async (data) => {
-  console.log("Form Data:", data);
 
   const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/instructors/register`;
 

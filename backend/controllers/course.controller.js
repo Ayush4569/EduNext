@@ -5,22 +5,31 @@ import {
   uploadToCloudinary,
 } from "../services/cloudinary.services.js";
 
+const getAllCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({ author: req.instructor });
+    if(!courses){
+      return res.status(404).json({message:"No courses found"})
+    }
+    return res.status(200).json({ courses });
+  } catch (error) {
+    console.log('Error fetching courses',error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 const createCourse = async (req, res) => {
+  console.log('createCourse',req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
   }
   const { title } = req.body;
-  const newCourse = new Course({ title, author: req.instructor._id });
-  await newCourse.save();
+  const newCourse = await Course.create({title,author:req.instructor._id});
   return res.status(200).json(newCourse);
 };
 const getCourseById = async (req, res) => {
   const { courseId } = req.params;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ message: errors.array() });
-  }
 
   const course = await Course.findOne({
     _id: courseId,
@@ -41,10 +50,16 @@ const updateCourseTitle = async (req, res) => {
     return res.status(400).json({ message: errors.array() });
   }
   try {
-    await Course.findOneAndUpdate(
+    const updatedCourse = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
-      { title }
+     {
+      title
+     },
+      {new:true}
     );
+    if(!updatedCourse){
+      return res.status(404).json({message:"Course not found or not accessible"})
+    }
     return res.status(200).json({ message: "course title updated", title });
   } catch (error) {
     console.error("Database Error:", error);
@@ -56,15 +71,21 @@ const updateCourseTitle = async (req, res) => {
 const updateCourseDescription = async (req, res) => {
   const { description } = req.body;
   const { courseId } = req.params;
+  console.log(req.params
+  );
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
   }
   try {
-    await Course.findOneAndUpdate(
+    const updatedCourse = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
       { description }
     );
+     if(!updatedCourse){
+      return res.status(404).json({message:"Course not found or not accessible"})
+    }
+    console.log("updatedCourse", updatedCourse);
     return res
       .status(200)
       .json({ message: "course description updated", description });
@@ -76,7 +97,7 @@ const updateCourseDescription = async (req, res) => {
   }
 };
 
-const updateCourseImage = async (req, res) => {
+const updateCourseImage = async (req, res) => {1
   const { courseId } = req.params;
   const coverImage = req.file;
   const errors = validationResult(req);
@@ -113,10 +134,13 @@ const updateCourseCategory = async (req, res) => {
     return res.status(400).json({ message: errors.array() });
   }
   try {
-    await Course.findOneAndUpdate(
+    const updatedCourse = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
       { category }
     );
+     if(!updatedCourse){
+      return res.status(404).json({message:"Course not found or not accessible"})
+    }
     return res
       .status(200)
       .json({ message: "course category updated", category });
@@ -135,10 +159,13 @@ const updateCoursePrice = async (req, res) => {
     return res.status(400).json({ message: errors.array() });
   }
   try {
-    await Course.findOneAndUpdate(
+    const updatedCourse = await Course.findOneAndUpdate(
       { _id: courseId, author: req.instructor },
       { price }
     );
+     if(!updatedCourse){
+      return res.status(404).json({message:"Course not found or not accessible"})
+    }
     return res.status(200).json({ message: "course price updated", price });
   } catch (error) {
     console.log("updateCourseprice Error:", error);
@@ -147,7 +174,57 @@ const updateCoursePrice = async (req, res) => {
     });
   }
 };
+const toggleCoursePublication = async (req, res) => {
+  const { courseId } = req.params;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  try {
+    const updatedCourseState = await Course.findOneAndUpdate(
+      { _id: courseId },
+      [
+        {
+          $set: {
+            isPublished: {
+              $not: ["$isPublished"],
+            },
+          },
+        },
+      ],
+      { new: true }
+    );
+    if (!updatedCourseState) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    return res.status(200).json({
+      message: updatedCourseState.isPublished
+        ? "Course published"
+        : "Course unpublished",
+      isPublished: updatedCourseState.isPublished, 
+    });
+  } catch (error) {
+    console.error("Error updating course publication:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const deleteCourse = async (req, res) => {
+  const { courseId } = req.params;
+  try {
+    const deletedCourse = await Course.findOneAndDelete({_id: courseId, author: req.instructor});
+    if (!deletedCourse) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    return res.status(200).json({ message: "Course deleted" });
+  } catch (error) {
+    console.error("Error deleting course :", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 export {
+  getAllCourses,
   createCourse,
   getCourseById,
   updateCourseTitle,
@@ -155,4 +232,6 @@ export {
   updateCourseImage,
   updateCourseCategory,
   updateCoursePrice,
+  toggleCoursePublication,
+  deleteCourse
 };

@@ -9,7 +9,7 @@ const SidebarRoutes = () => {
   const {pathname} = useLocation()
   const {instructor} = useInstructor()
   const {student} = useStudent()
-    const guestRoutes = [
+    const studentRoutes = [
         {
             icon:Layout,
             href:"/",
@@ -35,7 +35,7 @@ const SidebarRoutes = () => {
     ]
 
     // const routes = pathname?.startsWith('/teacher') ? teacherRoutes : guestRoutes
-    const routes = instructor ? teacherRoutes : student ? guestRoutes : null
+    const routes = instructor ? teacherRoutes : student ? studentRoutes : null
 
   return (
     <div className='flex flex-col w-full'>

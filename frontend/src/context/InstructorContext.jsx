@@ -1,7 +1,6 @@
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import {ColorRing} from "react-loader-spinner"
 const InstructorContext = createContext({});
 
 export const InstructorContextProvider = ({children})=>{
@@ -24,8 +23,7 @@ export const InstructorContextProvider = ({children})=>{
    if (loading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
-        <ColorRing visible color="#4fa94d" width={200} height={200} />
-         
+        <Loader2 className="animate-spin text-cyan-700" size={100}/>
       </div>
     );
   }

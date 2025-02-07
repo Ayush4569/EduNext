@@ -7,14 +7,9 @@ const courseSchema = new mongoose.Schema(
       type: String,
       required: [true, "Course title is required"],
     },
-    slug:{
-      type: String,
-      unique: true,
-    },
     description: {
       type: String,
     },
-
     coverImage: {
       type: String,
       validate: {
@@ -26,10 +21,10 @@ const courseSchema = new mongoose.Schema(
     },
 
     chapters: [
-     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Chapter",
-     }
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Chapter",
+      },
     ],
 
     price: {
@@ -41,7 +36,7 @@ const courseSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Attachment",
-       }
+      },
     ],
 
     author: {
@@ -49,10 +44,9 @@ const courseSchema = new mongoose.Schema(
       ref: "Instructor",
       required: [true, "Course author is required"],
     },
-    status: {
-      type: String,
-      enum: ["draft", "published"],
-      default: "draft",
+    isPublished:{
+      type:Boolean,
+      default:false
     },
     category: {
       type: String,
@@ -63,43 +57,41 @@ const courseSchema = new mongoose.Schema(
         ref: "Student",
       },
     ],
+    progress:{
+      type:String
+    }
   },
   { timestamps: true }
 );
 
-courseSchema.pre('save', function(next){
-  if(this.isModified('title')){
-    this.slug = this.title.toLowerCase().split(' ').join('-');
-  }
-  next();
-})
-
-courseSchema.pre('findOneAndDelete',async function(next){
-  const courseId = this.getQuery()._id
+courseSchema.pre("findOneAndDelete", async function (next) {
+  const courseId = this.getQuery()._id;
   try {
-    const courseChapterIds = await this.model.findById(courseId).select('chapters')
+    const courseChapterIds = await this.model
+      .findById(courseId)
+      .select("chapters");
     if (!courseChapterIds) {
       return next(new Error("Course chapters not found"));
     }
-    await Chapter.deleteMany({_id:{$in:courseChapterIds}})
-    next()
+    await Chapter.deleteMany({ _id: { $in: courseChapterIds } });
+    next();
   } catch (error) {
     next(error);
   }
- 
-}
-)
-courseSchema.pre('findOneAndDelete',async function(next){
-  const courseId = this.getQuery()._id
+});
+courseSchema.pre("findOneAndDelete", async function (next) {
+  const courseId = this.getQuery()._id;
   try {
-    const courseAttachmentIds = await this.model.findById(courseId).select('attachments')
+    const courseAttachmentIds = await this.model
+      .findById(courseId)
+      .select("attachments");
     if (!courseAttachmentIds) {
       return next(new Error("Course attachments not found"));
     }
-    await Attachment.deleteMany({_id:{$in:courseAttachmentIds}})
-    next()
+    await Attachment.deleteMany({ _id: { $in: courseAttachmentIds } });
+    next();
   } catch (error) {
     next(error);
   }
-})
+});
 export const Course = mongoose.model("Course", courseSchema);

@@ -10,7 +10,7 @@ import { upload } from "../services/multer.service.js";
 
 const router = express.Router();
 
-router.use("/:courseId", authInstructor, courseValidator);
+router.use("/", authInstructor, courseValidator);
 
 router.post(
   "/:courseId",

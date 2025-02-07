@@ -1,7 +1,6 @@
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import {ColorRing} from "react-loader-spinner"
 const StudentContext = createContext({});
 
 export const StudentContextProvider = ({children})=>{
@@ -10,7 +9,7 @@ export const StudentContextProvider = ({children})=>{
     const [loading,setLoading] = useState(true)
 
    useEffect(() => {
-    axios.get(`${import.meta.env.VITE_BASEURL}/api/v1students/profile`,{
+    axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/students/profile`,{
         withCredentials:true
     })
          .then((response)=>{
@@ -24,7 +23,7 @@ export const StudentContextProvider = ({children})=>{
    if (loading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center">
-        <ColorRing visible color="#4fa94d" width={200} height={200} />
+        <Loader2 className="animate-spin text-cyan-700" size={100}/>
       </div>
     );
   }
