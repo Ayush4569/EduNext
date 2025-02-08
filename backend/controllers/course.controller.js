@@ -42,6 +42,17 @@ const getCourseById = async (req, res) => {
   }
   return res.status(200).json(course);
 };
+const getCourseByCategory = async (req, res) => {
+  const {category} = req.query;
+   if(!category){
+    return res.status(400).json({message:"Category is required"})
+   }
+  const matchedCourses = await Course.find({category})
+  if(matchedCourses.length === 0){
+    return res.status(404).json({message:"No courses found"})
+  }
+  return res.status(200).json({courses:matchedCourses,message:"Courses fetched successfully"})
+}
 const updateCourseTitle = async (req, res) => {
   const { title } = req.body;
   const { courseId } = req.params;
@@ -227,6 +238,7 @@ export {
   getAllCourses,
   createCourse,
   getCourseById,
+  getCourseByCategory,
   updateCourseTitle,
   updateCourseDescription,
   updateCourseImage,
