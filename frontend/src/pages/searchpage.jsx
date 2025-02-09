@@ -3,6 +3,7 @@ import Categories from '../components/Categories'
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useLocation, useSearchParams } from 'react-router-dom';
+import SearchInput from '@/components/SearchInput';
 
 const Searchpage = () => {
   const categories = ['Computer science','Music','Fitness','Photography','Accounting','Engineering','Filming']
@@ -23,11 +24,17 @@ const Searchpage = () => {
   // };
 
   return (
+    <>
+    <div className='px-6 pt-6 md:hidden md:mb-0 block'>
+      <SearchInput/>
+    </div>
     <div className='p-6'>
      <Categories
       items={categories}
      />
     </div>
+    </>
+    
   )
 }
 

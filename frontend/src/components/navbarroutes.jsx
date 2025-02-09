@@ -10,17 +10,15 @@ import {
 import { Button } from "./ui/button";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { LogOut, Search } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useStudent } from "@/context/StudentContext";
 import { useInstructor } from "@/context/InstructorContext";
-import { Input } from "./ui/input";
+
+import SearchInput from "./SearchInput";
 const Navbarroutes = () => {
-  const location = useLocation();
   // const isTeacher = location.pathname.startsWith('/teacher');
   // const isStudent = location.pathname.includes('/chapter')
   const { pathname } = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const queryCategory = searchParams.get("category");
   const { instructor } = useInstructor();
   const { student } = useStudent();
   const searchPage = pathname.includes("/search");
@@ -43,17 +41,11 @@ const Navbarroutes = () => {
   return (
     <>
       {searchPage && (
-        <div className="hidden md:!block">
-          <div className="relative">
-            <Search className="h-5 w-5 absolute top-[10px] left-3 text-slate-600" />
-            <Input
-              className="w-full md:w-[300px] pl-9 bg-slate-100 focus-visible:ring-slate-200 rounded-md"
-              placeholder="Search for courses"
-            />
-          </div>
+        <div className="hidden md:block">
+         <SearchInput/>
         </div>
       )}
-      <div className="flex gap-x-4 items-center ml-auto">
+      <div className="flex md:gap-x-4 gap-x-2 items-center ml-auto">
         {(instructor || student) && (
           <>
             <Button variant="outline" onClick={() => logOut()}>

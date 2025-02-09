@@ -5,10 +5,10 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 const CategoryItem = ({category,icon}) => {
     const {pathname} = useLocation();
     const navigate = useNavigate();
-    const [searchParams,setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const queryCategory = searchParams.get("category");
     const queryTitle = searchParams.get("title");
-    const isSelected = queryCategory === category;
+    const isSelected = queryCategory === category; // eg category === 'Computer science' hence queryCategory  === category === 'Computer science'
 
     const onClick = () => {
         const url = qs.stringifyUrl({
@@ -18,7 +18,7 @@ const CategoryItem = ({category,icon}) => {
                 title: queryTitle
             }
         },{skipNull:true,skipEmptyString:true})
-       navigate(url)
+        navigate(url)
     }
 
   return (
