@@ -7,7 +7,6 @@ const CategoryItem = ({category,icon}) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const queryCategory = searchParams.get("category");
-    const queryTitle = searchParams.get("title");
     const isSelected = queryCategory === category; // eg category === 'Computer science' hence queryCategory  === category === 'Computer science'
 
     const onClick = () => {
@@ -15,7 +14,6 @@ const CategoryItem = ({category,icon}) => {
             url:pathname,
             query:{
                 category: isSelected ? null : category,
-                title: queryTitle
             }
         },{skipNull:true,skipEmptyString:true})
         navigate(url)

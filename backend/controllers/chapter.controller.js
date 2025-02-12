@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { Course } from "../models/course.model.js";
 import { Chapter } from "../models/chapters.model.js";
+import awsService from "../services/aws.services.js";
 
 const createChapter = async (req, res) => {
   const { courseId } = req.params;
@@ -128,7 +129,62 @@ const editChapterDescription = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
+const uploadChapterVideo = async (req, res) => {
+ if(req.body.oldVideo){
+  await awsService.deleteFile(req.body.oldVideo);
+ }
+  if (!req.file) {
+    return res.status(400).json({ message: "Please upload a video" });
+  }
+  const { chapterId } = req.params;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array() });
+  }
+  try {
+    const uploadedVideo = req.file;
+    const uploadedLink = await awsService.uploadFile(
+      uploadedVideo.originalname,
+      uploadedVideo.path,
+      uploadedVideo.mimetype
+    );
+    if (!uploadedLink) {
+      return res.status(500).json({ message: "Error uploading video" });
+    }
+    const updatedChapterVideo = await Chapter.findOneAndUpdate(
+      { _id: chapterId },
+      {
+        video: {
+          fileName: uploadedVideo.originalname,
+          fileUrl: uploadedLink.Location,
+          format: uploadedVideo.mimetype,
+        },
+      },
+      { new: true }
+    );
+    if (updatedChapterVideo) {
+      return res.status(200).json({
+        message: "Chapter video uploaded successfully",
+        video: updatedChapterVideo.video,
+      });
+    }
+  } catch (error) {
+    console.error("Error uploading chapter video:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+const getSignedUrl = async (req, res) => {
+  try {
+    const signedUrl = await awsService.getSignedUrl(req.params.fileName);
+    if (!signedUrl) {
+      return res.status(500).json({ message: "Error generating signed URL" });
+    }
+    return res.status(200).json({ signedUrl });
+  } catch (error) {
+    console.error("Error generating signed URL:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 const toggleChapterAccess = async (req, res) => {
   const { chapterId } = req.params;
   try {
@@ -178,7 +234,11 @@ const toggleChapterPublication = async (req, res) => {
       { new: true }
     );
     if (!updatedChapterState) {
-      return res.status(404).json({ message: "Error while updating the chapter publication state" });
+      return res
+        .status(404)
+        .json({
+          message: "Error while updating the chapter publication state",
+        });
     }
     return res.status(200).json({
       message: updatedChapterState.isPublished
@@ -201,20 +261,23 @@ const deleteChapter = async (req, res) => {
     if (!deletedChapter) {
       return res.status(404).json({ message: "Chapter not found" });
     }
-   
-    const updatedCourse = await Course.findByIdAndUpdate(courseId, { $pull: { chapters: chapterId }},{new:true})
+
+    const updatedCourse = await Course.findByIdAndUpdate(
+      courseId,
+      { $pull: { chapters: chapterId } },
+      { new: true }
+    );
     if (!updatedCourse) {
-      return res.status(400).json({ message: "Error while deleting the chapter from course" });
+      return res
+        .status(400)
+        .json({ message: "Error while deleting the chapter from course" });
     }
     return res.status(200).json({ message: "Chapter deleted successfully" });
-
   } catch (error) {
     console.error("Error deleting chapter:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
 
 export {
   createChapter,
@@ -222,7 +285,9 @@ export {
   getCourseChapter,
   editChapterTitle,
   editChapterDescription,
+  uploadChapterVideo,
+  getSignedUrl,
   toggleChapterAccess,
   toggleChapterPublication,
-  deleteChapter
+  deleteChapter,
 };

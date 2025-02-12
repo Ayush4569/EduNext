@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading,setLoading] = useState(false)
-
   const fileUploadRef = useRef(null);
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -45,7 +44,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
   };
       const deleteAttachment = async(attachmentId)=>{
        try {
-        const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${attachmentId}`)
+        const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/api/v1/attachments/${courseId}/${attachmentId}`,{withCredentials:true})
         if(response.statusText === 'OK' && response.status === 200){
           setCourse((prev)=>({...prev,attachments:response.data.attachments}))
           toast.success(response.data.message || 'Attachment removed')

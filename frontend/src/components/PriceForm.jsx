@@ -24,7 +24,7 @@ const PriceForm = ({courseId,coursePrice,setCourse}) => {
       const { isValid,isSubmitting} = form.formState;
       const { reset} = form;
       const toggleEdit = ()=> setIsEditing((current)=> !current)
-      function convertToInr(price){
+       function convertToInr(price){
          return new Intl.NumberFormat('en-US',{style:'currency',currency:'INR'}).format(price)
       }
       const submitHandler = async(editedData) => {

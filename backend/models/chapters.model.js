@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const chapterSchema = new mongoose.Schema(
   {
     title: {
@@ -20,15 +19,19 @@ const chapterSchema = new mongoose.Schema(
       default: false,
     },
     video: {
-      muxAssetId: {
+      fileName: {
         type: String,
       },
-      muxPlaybackId: {
+      fileUrl: {
+        type: String,
+      },
+      format: {
         type: String,
       },
     },
-    progress: {
-      type: String,
+    isCompleted: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

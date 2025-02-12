@@ -4,8 +4,8 @@ import {
   deleteFromCloudinary,
   uploadToCloudinary,
 } from "../services/cloudinary.services.js";
-
-const getAllCourses = async (req, res) => {
+import mongoose from "mongoose";
+const getInstructorCourses = async (req, res) => {
   try {
     const courses = await Course.find({ author: req.instructor });
     if(!courses){
@@ -17,9 +17,75 @@ const getAllCourses = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
-
+const getAllCourses = async (req, res) => {
+  const {category,title} = req.query;
+  let filter = {isPublished:true};
+  if(category){
+    filter.category = category
+  }
+  if(title){
+    filter.title = {$regex:title,$options:'i'}
+  }
+  try {
+    const courses = await Course.aggregate([
+      {
+        $match:filter
+      },
+      {
+        $lookup:{
+          from :"chapters",
+          foreignField:"_id",
+          localField:"chapters",
+          as:"courseChapters",
+          pipeline:[
+            {
+              $project:{
+                isCompleted:1,
+                _id:0
+              }
+            }
+          ]
+        }
+      },
+      {
+        $addFields:{
+          isEnrolled:{
+           $cond:[
+              {$in:[new mongoose.Types.ObjectId(req.student?._id),'$enrolledStudents']},
+              true,
+              false
+           ]
+          },
+          enrolledStudents:{
+            $size:'$enrolledStudents'
+          },
+          chapters:"$courseChapters"
+        },
+      },
+      {
+        $project:{
+          title:1,
+          category:1,
+          price:1,
+          coverImage:1,
+          isPublished:1,
+          createdAt:1,
+          isEnrolled:1,
+          enrolledStudents:1,
+         chapters:1
+        }
+      }
+    ])
+    if(!courses){
+      return res.status(404).json({message:"No courses found"})
+    }
+    return res.status(200).json({ courses });
+  } catch (error) {
+    console.log('Error fetching courses',error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 const createCourse = async (req, res) => {
-  console.log('createCourse',req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
@@ -30,7 +96,6 @@ const createCourse = async (req, res) => {
 };
 const getCourseById = async (req, res) => {
   const { courseId } = req.params;
-
   const course = await Course.findOne({
     _id: courseId,
     author: req.instructor,
@@ -82,8 +147,6 @@ const updateCourseTitle = async (req, res) => {
 const updateCourseDescription = async (req, res) => {
   const { description } = req.body;
   const { courseId } = req.params;
-  console.log(req.params
-  );
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
@@ -236,6 +299,7 @@ const deleteCourse = async (req, res) => {
 }
 export {
   getAllCourses,
+  getInstructorCourses,
   createCourse,
   getCourseById,
   getCourseByCategory,

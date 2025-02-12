@@ -40,7 +40,6 @@ function InstructorLogin() {
       console.log('login error',error);
       toast.error(error?.response?.data?.message || error.message)
      }
-    console.log("Form Data:", data);
   };
   return (
     <div className="h-screen w-screen flex items-center justify-center">

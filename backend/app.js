@@ -8,7 +8,6 @@ import instructorRoutes from "./routes/instructor.routes.js"
 import courseRoutes from "./routes/course.routes.js"
 import chapterRoutes from "./routes/chapter.routes.js"
 import attachmentsRoutes from "./routes/attachments.routes.js"
-import muxRoutes from "./routes/mux.routes.js"
 import path from "path";
 dotenv.config();
 
@@ -31,7 +30,6 @@ app.use('/api/v1/instructors',instructorRoutes)
 app.use('/api/v1/courses',courseRoutes)
 app.use('/api/v1/chapters',chapterRoutes)
 app.use('/api/v1/attachments',attachmentsRoutes)
-app.use('/api/mux',muxRoutes)
 
 // server
 app.listen(4000, () => {

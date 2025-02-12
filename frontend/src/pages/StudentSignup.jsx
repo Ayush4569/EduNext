@@ -32,10 +32,8 @@ function StudentSignup() {
  const {setStudent} = useStudent()
  const onSubmit = async (data) => {
 
-  const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/students/register`
-
   try {
-    const response = await axios.post(apiEndpoint, data);
+    const response = await axios.post(`${import.meta.env.VITE_BASEURL}/api/v1/students/register`, data);
 
     if (response.status === 201) {
         setStudent(response.data);

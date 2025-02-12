@@ -15,7 +15,6 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
   const submitHandler = async (e) => {
     const formData = new FormData();
     formData.append("coverImage", e.target.files[0]);
-    console.log(e.target.files[0]);
     try {
       setLoading(true)
       const response = await axios.patch(
@@ -26,7 +25,6 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
           headers: { "Content-type": "multipart/form-data" },
         }
       );
-      console.log(response);
       if (response.statusText === "OK" || response.status === 200) {
        setCourse((prev)=>({...prev,coverImage:response.data.url}))
         toggleEdit();

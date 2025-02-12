@@ -5,12 +5,12 @@ import {
   removeAttachment,
 } from "../controllers/attachment.controller.js";
 import { authInstructor } from "../middlewares/auth.middleware.js";
-import { isCourseExist as courseValidator } from "../middlewares/courseValidator.middleware.js";
+import {  courseValidator } from "../middlewares/courseValidator.middleware.js";
 import { upload } from "../services/multer.service.js";
 
 const router = express.Router();
 
-router.use("/", authInstructor, courseValidator);
+router.use( authInstructor);
 
 router.post(
   "/:courseId",

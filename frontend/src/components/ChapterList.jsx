@@ -48,7 +48,7 @@ const ChapterList = ({
     }
   };
   const onEdit = (chapterId) => {
-    return navigate(
+     navigate(
       `/teacher/courses/${courseId}/${chapterId}/editChapter`
     );
   };
@@ -96,7 +96,7 @@ const ChapterList = ({
                       </Badge>
                       <Pencil
                         onClick={() => onEdit(chapter._id)}
-                        className="w-h4 h-4  hover:opacity-75 transition"
+                        className="w-4 h-4  hover:opacity-75 transition"
                       />
                     </div>
                   </div>

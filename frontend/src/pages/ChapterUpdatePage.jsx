@@ -9,13 +9,12 @@ import axios from "axios";
 import { ArrowLeft, LayoutDashboard, Eye, Video, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useParams, useNavigate, Link, Navigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 const ChapterUpdatePage = () => {
   const { courseId, chapterId } = useParams();
   const [chapter, setChapter] = useState(null);
   const navigate = useNavigate();
-  const [isValidCourseChapter, setIsValidCourseChapter] = useState(false);
   useEffect(() => {
     const isValidChapter = async () => {
       try {
@@ -29,7 +28,9 @@ const ChapterUpdatePage = () => {
         );
         if (response.status === 200 && response.statusText === "OK") {
           setChapter(response.data.chapter);
-          setIsValidCourseChapter(true);
+          if(!response.data.chapter){
+            navigate(`/teacher/courses/${courseId}`)
+          }
         }
       } catch (error) {
         toast.error(error.response?.data.message || error.message);
@@ -37,13 +38,9 @@ const ChapterUpdatePage = () => {
       }
     };
     isValidChapter();
-  }, []);
-
-  if (!isValidCourseChapter) {
-    return <Navigate to={`/teacher/courses/${courseId}`} />
-  }
-
-  const requiredFields = [chapter?.title, chapter?.video, chapter?.content];
+  }, [navigate,courseId,chapterId]);
+  
+  const requiredFields = [chapter?.title, chapter?.content, chapter?.video];
   const completedFields = requiredFields.filter((field) => field);
   const isCompleted = requiredFields.every((field) => field);
 

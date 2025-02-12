@@ -17,7 +17,7 @@ const Teacherpage = () => {
   useEffect(() => {
    const fetchCourses = async()=>{
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/courses`,{withCredentials:true})
+      const response = await axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/courses/instructorCourses`,{withCredentials:true})
       if(response.statusText == 'OK' && response.data){
         setCourses(response.data.courses)
       }
