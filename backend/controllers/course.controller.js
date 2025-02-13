@@ -98,14 +98,13 @@ const getCourseById = async (req, res) => {
   const { courseId } = req.params;
   const course = await Course.findOne({
     _id: courseId,
-    author: req.instructor,
   })
     .populate("attachments")
     .populate("chapters");
   if (!course) {
     return res.status(400).json({ message: "No such course exists" });
   }
-  return res.status(200).json(course);
+  return res.status(200).json({course});
 };
 const getCourseByCategory = async (req, res) => {
   const {category} = req.query;

@@ -13,6 +13,7 @@ import InstructorSignup from "./pages/InstructorSignup";
 import InstructorLogin from "./pages/InstructorLogin";
 import CourseUpdatePage from "./pages/CourseUpdatePage";
 import ChapterUpdatePage from "./pages/ChapterUpdatePage";
+import CoursePage from "./CoursePage";
 
 function App() {
 axios.defaults.withCredentials = true
@@ -27,10 +28,12 @@ axios.defaults.withCredentials = true
     <Route path="/teacher/courses/:courseId" element={<CourseUpdatePage/>} /> 
     <Route path="/teacher/courses/:courseId/:chapterId/editChapter" element={<ChapterUpdatePage/>} /> 
     </Route>
+
      <Route path="/signup" element={<StudentSignup/>}/>
      <Route path="/login" element={<StudentLogin/>}/>
      <Route path="/teacher/signup" element={<InstructorSignup/>}/>
      <Route path="/teacher/login" element={<InstructorLogin/>}/>
+     <Route path="/courses/:courseId" element={<CoursePage/>} />
     
    </Routes>
 

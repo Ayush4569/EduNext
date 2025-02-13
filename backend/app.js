@@ -19,7 +19,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials:true}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.resolve("./public")));
+app.use('/public',express.static(path.resolve("./public")));
 
 // routes
 app.get("/", (req, res) => {

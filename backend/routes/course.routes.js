@@ -30,7 +30,7 @@ router.post(
 router.get(
   "/:courseId",
   [param("courseId").isMongoId().withMessage("Course Id is required")],
-  authInstructor,
+  // authInstructor,
   courseValidator,
   getCourseById
 );
