@@ -37,34 +37,40 @@ router.get(
 router.patch(
   "/:courseId/editTitle",
   [body("title").isString().withMessage("Title is required")],
+  authInstructor,
   courseValidator,
   updateCourseTitle
 );
 router.patch(
   "/:courseId/editDescription",
   [body("description").isString().withMessage("Title is required")],
+  authInstructor,
   courseValidator,
   updateCourseDescription
 );
 router.patch(
   "/:courseId/editCategory",
   [body("category").isString().withMessage("Title is required")],
+  authInstructor,
   courseValidator,
   updateCourseCategory
 );
 router.patch(
   "/:courseId/editPrice",
   [body("price").isString().withMessage("Title is required")],
+  authInstructor,
   courseValidator,
   updateCoursePrice
 );
 router.patch(
   "/:courseId/editPublication",
+  authInstructor,
   courseValidator,
   toggleCoursePublication
 );
 router.patch(
   "/:courseId/editCoverImage",
+  authInstructor,
   courseValidator,
   upload.single("coverImage"),
   updateCourseImage

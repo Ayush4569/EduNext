@@ -96,15 +96,55 @@ const createCourse = async (req, res) => {
 };
 const getCourseById = async (req, res) => {
   const { courseId } = req.params;
-  const course = await Course.findOne({
-    _id: courseId,
-  })
-    .populate("attachments")
-    .populate("chapters");
+  const course = await Course.aggregate([
+    {
+      $match:{
+        _id:new mongoose.Types.ObjectId(courseId)
+      }
+    },
+    {
+      $lookup:{
+        from:"chapters",
+        localField:"chapters",
+        foreignField:"_id",
+        as:"courseChapters"
+      }
+    },
+    {
+      $lookup:{
+        from:"attachments",
+        localField:"attachments",
+        foreignField:"_id",
+        as:"courseAttachments"
+      }
+    },
+    {
+      $addFields:{
+        chapters:"$courseChapters",
+        attachments:"$courseAttachments",
+        isEnrolled: {
+          $in: [new mongoose.Types.ObjectId(req.student?._id), "$enrolledStudents"] 
+        }
+      }
+    },
+    {
+      $project:{
+        title:1,
+        category:1,
+        price:1,
+        coverImage:1,
+        isPublished:1,
+        createdAt:1,
+        chapters:1,
+        attachments:1,
+        isEnrolled:1
+      }
+    }
+  ])
   if (!course) {
     return res.status(400).json({ message: "No such course exists" });
   }
-  return res.status(200).json({course});
+  return res.status(200).json({course:course[0]});
 };
 const getCourseByCategory = async (req, res) => {
   const {category} = req.query;

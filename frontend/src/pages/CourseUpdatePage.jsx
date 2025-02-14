@@ -37,7 +37,7 @@ const CourseUpdatePage = () => {
         withCredentials: true,
       })
       .then((response) => {
-        setCourse(response.data);
+        setCourse(response.data.course);
       })
       .catch((error) => {
         console.log(error);
@@ -55,7 +55,7 @@ const CourseUpdatePage = () => {
     course?.coverImage,
     course?.price,
     course?.category,
-    course?.chapters.some((chapter) => chapter.isPublished === true),
+    course?.chapters?.some((chapter) => chapter.isPublished === true),
   ];
   const completedFields = requiredFields.filter((field) => field);
   const isCompleted = requiredFields.every((field) => field);

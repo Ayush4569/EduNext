@@ -38,7 +38,6 @@ const courseSchema = new mongoose.Schema(
         ref: "Attachment",
       },
     ],
-
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instructor",

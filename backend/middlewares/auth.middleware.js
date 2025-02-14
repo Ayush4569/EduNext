@@ -24,7 +24,7 @@ export const authInstructor = async (req, res,next) => {
   if (!token) {
     return res.status(400).json({ message: "Please login" });
   }
-  const instructorPayload = jwt.verify(token, process.env.JWT_SECRET,);
+  const instructorPayload = jwt.verify(token, process.env.JWT_SECRET);
   if (!instructorPayload) {
     return res.status(400).json({ message: "Invalid token,proceed to login" });
   }
