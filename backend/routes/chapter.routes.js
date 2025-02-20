@@ -18,19 +18,13 @@ import {
 import { upload } from "../services/multer.service.js";
 const router = express.Router();
 
-router.use(
-  authInstructor,
-);
+router.use(authInstructor);
 router.post(
   "/:courseId",
   [body("title").isString().withMessage("Title is required")],
   createChapter
 );
-router.patch(
-  "/:courseId/reorder",
-  chapterValidator,
-  reorderChapters
-);
+router.patch("/:courseId/reorder", chapterValidator, reorderChapters);
 router.get(
   "/:courseId/:chapterId",
   [
@@ -60,16 +54,17 @@ router.patch(
   chapterValidator,
   editChapterDescription
 );
-router.patch('/:courseId/:chapterId/uploadVideo',
+router.patch(
+  "/:courseId/:chapterId/uploadVideo",
   [
     param("courseId").isMongoId().withMessage("Course Id is required"),
     param("chapterId").isMongoId().withMessage("Chapter Id is required"),
   ],
-  upload.single('video'),
+  upload.single("video"),
   chapterValidator,
   uploadChapterVideo
-)
-router.get('/:courseId/:chapterId/signedUrl/:fileName',getSignedUrl)
+);
+router.get("/:courseId/:chapterId/signedUrl/:fileName", getSignedUrl);
 router.patch(
   "/:courseId/:chapterId/editAccess",
   [

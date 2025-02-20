@@ -44,9 +44,8 @@ const addAttachments = async (req, res) => {
     }
 
     // Respond with success
-    const allAttachments = await Course.findById(courseId).populate(
-      "attachments"
-    );
+    const allAttachments =
+      await Course.findById(courseId).populate("attachments");
     return res.status(200).json({
       message: "Attachments added successfully",
       attachments: allAttachments.attachments,
@@ -86,7 +85,4 @@ const removeAttachment = async (req, res) => {
   }
 };
 
-export{
-    addAttachments,
-    removeAttachment
-}
+export { addAttachments, removeAttachment };

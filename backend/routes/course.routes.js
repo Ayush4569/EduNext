@@ -18,9 +18,9 @@ import { courseValidator } from "../middlewares/courseValidator.middleware.js";
 import { upload } from "../services/multer.service.js";
 
 const router = express.Router();
-router.get("/",authStudent,getAllCourses);
-router.get("/instructorCourses",authInstructor ,getAllCourses);
-router.get("/category",authStudent,getCourseByCategory)
+router.get("/", authStudent, getAllCourses);
+router.get("/instructorCourses", authInstructor, getAllCourses);
+router.get("/category", authStudent, getCourseByCategory);
 router.post(
   "/create",
   [body("title").isString().withMessage("Title is required")],
@@ -74,5 +74,5 @@ router.patch(
   upload.single("coverImage"),
   updateCourseImage
 );
-router.delete("/:courseId",authInstructor,courseValidator,deleteCourse)
+router.delete("/:courseId", authInstructor, courseValidator, deleteCourse);
 export default router;

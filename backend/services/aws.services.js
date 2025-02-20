@@ -7,7 +7,7 @@ export class AwsService {
     this.s3 = new aws.S3({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: 'eu-north-1',
+      region: "eu-north-1",
       signatureVersion: "v4",
     });
   }

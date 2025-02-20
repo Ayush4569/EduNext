@@ -130,9 +130,9 @@ const editChapterDescription = async (req, res) => {
   }
 };
 const uploadChapterVideo = async (req, res) => {
- if(req.body.oldVideo){
-  await awsService.deleteFile(req.body.oldVideo);
- }
+  if (req.body.oldVideo) {
+    await awsService.deleteFile(req.body.oldVideo);
+  }
   if (!req.file) {
     return res.status(400).json({ message: "Please upload a video" });
   }
@@ -234,11 +234,9 @@ const toggleChapterPublication = async (req, res) => {
       { new: true }
     );
     if (!updatedChapterState) {
-      return res
-        .status(404)
-        .json({
-          message: "Error while updating the chapter publication state",
-        });
+      return res.status(404).json({
+        message: "Error while updating the chapter publication state",
+      });
     }
     return res.status(200).json({
       message: updatedChapterState.isPublished

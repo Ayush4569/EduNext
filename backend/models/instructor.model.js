@@ -52,10 +52,10 @@ const instructorSchema = new mongoose.Schema(
 instructorSchema.statics.hashPassword = async (password) => {
   return await bcrypt.hash(password, 10);
 };
-instructorSchema.methods.generateAuthToken = function() {
+instructorSchema.methods.generateAuthToken = function () {
   return jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
 };
-instructorSchema.methods.verifyPassword = async function(password){
-  return await bcrypt.compare(password,this.password)
+instructorSchema.methods.verifyPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 export const Instructor = mongoose.model("Instructor", instructorSchema);

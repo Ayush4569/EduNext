@@ -13,19 +13,19 @@ const registerInstructor = async (req, res, next) => {
   }
   const hashedPassword = await Instructor.hashPassword(password);
   const instructor = await Instructor.create({
-    fullname:{
-      firstname:fullname.firstname,
-      lastname:fullname.lastname,
+    fullname: {
+      firstname: fullname.firstname,
+      lastname: fullname.lastname,
     },
     email,
-    password:hashedPassword,
-    contact
-  })
+    password: hashedPassword,
+    contact,
+  });
   return res.status(201).json(instructor);
 };
 
 const loginInstructor = async (req, res, next) => {
-  console.log(req.headers,req.cookies);
+  console.log(req.headers, req.cookies);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -42,7 +42,7 @@ const loginInstructor = async (req, res, next) => {
 
   const token = instructor.generateAuthToken();
   res.cookie("token", token);
-  return res.status(200).json( instructor);
+  return res.status(200).json(instructor);
 };
 const instructorProfile = async (req, res, next) => {
   return res.status(200).json(req.instructor);
@@ -52,9 +52,9 @@ const logoutInstructor = async (req, res, next) => {
   res.clearCookie("token");
   return res.status(200).json({ message: "Logged out" });
 };
-export  {
-    registerInstructor,
-    loginInstructor,
-    instructorProfile,
-    logoutInstructor,
+export {
+  registerInstructor,
+  loginInstructor,
+  instructorProfile,
+  logoutInstructor,
 };

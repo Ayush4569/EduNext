@@ -13,14 +13,14 @@ const registerStudent = async (req, res, next) => {
   }
   const hashedPassword = await Student.hashPassword(password);
   const student = await Student.create({
-    fullname:{
-      firstname:fullname.firstname,
-      lastname:fullname.lastname,
+    fullname: {
+      firstname: fullname.firstname,
+      lastname: fullname.lastname,
     },
     email,
-    password:hashedPassword,
-    contact
-  })
+    password: hashedPassword,
+    contact,
+  });
   return res.status(201).json(student);
 };
 
@@ -51,9 +51,4 @@ const logoutStudent = async (req, res, next) => {
   res.clearCookie("token");
   return res.status(200).json({ message: "Logged out" });
 };
-export {
-  registerStudent,
-  loginStudent,
-  studentProfile,
-  logoutStudent,
-};
+export { registerStudent, loginStudent, studentProfile, logoutStudent };
