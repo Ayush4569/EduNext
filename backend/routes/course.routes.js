@@ -12,7 +12,6 @@ import {
   toggleCoursePublication,
   getAllCourses,
   getCourseByCategory,
-  getInstructorCourses
 } from "../controllers/course.controller.js";
 import { authInstructor, authStudent } from "../middlewares/auth.middleware.js";
 import { courseValidator } from "../middlewares/courseValidator.middleware.js";
@@ -20,7 +19,7 @@ import { upload } from "../services/multer.service.js";
 
 const router = express.Router();
 router.get("/",authStudent,getAllCourses);
-router.get("/instructorCourses",authInstructor ,getInstructorCourses);
+router.get("/instructorCourses",authInstructor ,getAllCourses);
 router.get("/category",authStudent,getCourseByCategory)
 router.post(
   "/create",
@@ -30,7 +29,7 @@ router.post(
 router.get(
   "/:courseId",
   [param("courseId").isMongoId().withMessage("Course Id is required")],
-  // authInstructor,
+  authStudent,
   courseValidator,
   getCourseById
 );
@@ -75,5 +74,5 @@ router.patch(
   upload.single("coverImage"),
   updateCourseImage
 );
-router.delete("/:courseId",courseValidator,deleteCourse)
+router.delete("/:courseId",authInstructor,courseValidator,deleteCourse)
 export default router;

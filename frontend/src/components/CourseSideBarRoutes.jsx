@@ -1,16 +1,20 @@
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Lock, PlayCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const CourseSideBarRoutes = ({ chapter,course }) => {
-  console.log(course);
-  const [isActive, setIsActive] = useState(false);
-  const isCompleted = chapter.isCompleted;
+const CourseSideBarRoutes = ({ chapter, course }) => {
+  const { pathname } = useLocation();
+  const isActive = pathname.includes(chapter._id);
+  const isCompleted = course.courseProgress?.completedChapters.includes(chapter._id);
   const isEnrolled = course.isEnrolled;
+  const isFree = chapter.isFree;
   const navigate = useNavigate();
+  useEffect(() => {
+    navigate(`/courses/${course._id}/chapters/${course.chapters[0]._id}`);
+  }, [course]);
+
   function onClick(chapterId) {
-    setIsActive(true);
     navigate(`/courses/${course._id}/chapters/${chapterId}`);
   }
   return (
@@ -24,32 +28,25 @@ const CourseSideBarRoutes = ({ chapter,course }) => {
         isCompleted && "text-emerald-700 hover:text-emerald-700",
         isCompleted && isActive && "bg-emerald-200/20"
       )}
+      disabled={!isEnrolled || !isFree}
     >
       <div className="flex items-center gap-x-2 py-4">
-        {
-          isEnrolled ? (
-            <PlayCircle
-              className={cn(
-                "h-5 w-5",
-                isActive ? "text-emerald-700" : "text-slate-500"
-              )}
-            />
-          ) : (
-            <Lock
-          size={22}
-          className={cn(
-            "text-slate-500",
-            isActive && "text-slate-700 ",
-            isCompleted && "text-emerald-700"
-          )}
-        />
-          )
-        }
+        {isEnrolled || isFree ? (
+          <PlayCircle
+            className={cn(
+              "h-5 w-5",
+              isActive && "text-slate-500",
+              isCompleted && "text-emerald-700"
+            )}
+          />
+        ) : (
+          <Lock size={22} className="text-slate-500" />
+        )}
         {chapter.title}
       </div>
       <div
         className={cn(
-          "ml-auto opacity-0 border-2 border-slate-700 h-full transition-all",
+          "ml-auto opacity-0 border-2 border-sky-700 h-full transition-all",
           isActive && "opacity-100",
           isCompleted && "border-emerald-700"
         )}

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Student } from "../models/student.model.js";
 import { Instructor } from "../models/instructor.model.js";
 
-export const authStudent = async (req, res,next) => {
+export const authStudent = async (req, res, next) => {
   const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(400).json({ message: "Please login" });
@@ -13,13 +13,13 @@ export const authStudent = async (req, res,next) => {
   }
   const student = await Student.findById(userPayload);
   if (!student) {
-    return res.status(400).json({ message: "No such user exist" });
+    return res.status(400).json({ message: "Please login first" });
   }
   req.student = student;
   return next();
 };
 
-export const authInstructor = async (req, res,next) => {
+export const authInstructor = async (req, res, next) => {
   const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(400).json({ message: "Please login" });
@@ -30,9 +30,8 @@ export const authInstructor = async (req, res,next) => {
   }
   const instructor = await Instructor.findById(instructorPayload);
   if (!instructor) {
-    return res.status(400).json({ message: "No such instructor exist" });
+    return res.status(400).json({ message: "Please login first" });
   }
   req.instructor = instructor;
   return next();
 };
-

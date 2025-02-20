@@ -43,9 +43,9 @@ const courseSchema = new mongoose.Schema(
       ref: "Instructor",
       required: [true, "Course author is required"],
     },
-    isPublished:{
-      type:Boolean,
-      default:false
+    isPublished: {
+      type: Boolean,
+      default: false,
     },
     category: {
       type: String,
@@ -56,9 +56,6 @@ const courseSchema = new mongoose.Schema(
         ref: "Student",
       },
     ],
-    progress:{
-      type:String
-    }
   },
   { timestamps: true }
 );

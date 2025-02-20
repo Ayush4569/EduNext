@@ -51,13 +51,13 @@ const studentSchema = new mongoose.Schema(
 studentSchema.statics.hashPassword = async (password) => {
   return await bcrypt.hash(password, 10);
 };
-studentSchema.methods.generateAuthToken = function() {
+studentSchema.methods.generateAuthToken = function () {
   return jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
 };
-studentSchema.methods.verifyPassword = async function(password) {
+studentSchema.methods.verifyPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
- const Student = mongoose.model("Student", studentSchema);
+const Student = mongoose.model("Student", studentSchema);
 
- export {Student}
+export { Student };
