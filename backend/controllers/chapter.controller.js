@@ -60,18 +60,7 @@ const reorderChapters = async (req, res) => {
 };
 
 const getCourseChapter = async (req, res) => {
-  const { courseId, chapterId } = req.params;
-  const isValidCourseChapter = await Course.findOne({
-    _id: courseId,
-    author: req.instructor,
-    chapters: chapterId,
-  }).populate("chapters");
-  if (!isValidCourseChapter) {
-    return res
-      .status(400)
-      .json({ message: "This chapter does not belong to this course" });
-  }
-
+  const { chapterId } = req.params;
   const chapter = await Chapter.findById(chapterId);
   if (!chapter) {
     return res.status(404).json({ message: "Chapter not found" });

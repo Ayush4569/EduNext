@@ -63,3 +63,7 @@
     @apply bg-background text-foreground;
   }
 }
+/* Ensure smooth animation and handle Firefox */
+.bar{
+  background: linear-gradient(135deg, rgba(236, 0, 140, 1) 0%, rgba(252, 103, 103, 1) 100%);
+}

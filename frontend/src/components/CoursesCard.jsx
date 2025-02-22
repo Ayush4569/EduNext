@@ -8,10 +8,7 @@ const CoursesCard = ({ course }) => {
       currency: "INR",
     }).format(price);
   }
-  const courseProgress =
-    (course.chapters.filter((chapter) => chapter.isCompleted).length /
-      course.chapters.length) *
-    100;
+  const courseProgress = course?.courseProgress?.progressPercentage || 0;
   return (
     <Link to={`/courses/${course._id}`} className="hover:cursor-pointer">
       <div className="group hover:shadow-md transition overflow-hidden border rounded-lg p-4 h-full">
@@ -37,22 +34,30 @@ const CoursesCard = ({ course }) => {
             </div>
           </div>
           {course.isEnrolled ? (
-            <div className="flex flex-col mt-2 w-full">
-              <Label htmlFor='progress' className="font-medium">
+            <div className="flex flex-col mt-2 gap-y-1 w-full">
+              <Label htmlFor="progress" className="font-medium">
                 Course Progress:
               </Label>
               <div className="w-full flex items-center gap-x-5">
-              <progress
-                id="progress"
-                value={courseProgress}
-                max="100"
-                className="w-2/3"
-              />
-              <p className="font-medium text-justify">{courseProgress} %</p>
+                <div className="w-full">
+                  <div className="w-full bg-gray-200 rounded-sm h-4 overflow-hidden shadow-md">
+                    <div
+                      className={`h-full bar transition-all duration-1000 ease-out`}
+                      style={{
+                        width: `${courseProgress}%`,
+                      }}
+                    >
+                      <span className="sr-only">
+                        {courseProgress}% Complete
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <p className="font-medium text-justify">{courseProgress} %</p>
               </div>
             </div>
           ) : (
-            <p>{formatPrice(course.price)}</p>
+            <p className="mt-6">{formatPrice(course.price)}</p>
           )}
         </div>
       </div>

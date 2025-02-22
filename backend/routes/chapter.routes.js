@@ -1,6 +1,6 @@
 import express from "express";
 import { param, body } from "express-validator";
-import { authInstructor } from "../middlewares/auth.middleware.js";
+import { authInstructor, authUser } from "../middlewares/auth.middleware.js";
 import { chapterValidator } from "../middlewares/chapterValidator.middleware.js";
 import { courseValidator } from "../middlewares/courseValidator.middleware.js";
 import {
@@ -18,7 +18,7 @@ import {
 import { upload } from "../services/multer.service.js";
 const router = express.Router();
 
-router.use(authInstructor);
+router.use(authUser);
 router.post(
   "/:courseId",
   [body("title").isString().withMessage("Title is required")],
@@ -64,7 +64,7 @@ router.patch(
   chapterValidator,
   uploadChapterVideo
 );
-router.get("/:courseId/:chapterId/signedUrl/:fileName", getSignedUrl);
+router.get("/:courseId/:chapterId/signedUrl/:fileName", authUser,getSignedUrl);
 router.patch(
   "/:courseId/:chapterId/editAccess",
   [

@@ -25,7 +25,6 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
   const { reset } = form;
   const toggleEdit = () => setIsEditing((current) => !current);
   const submitHandler = async (editedData) => {
-    console.log(editedData);
     try {
       const response = await axios.patch(
         `${

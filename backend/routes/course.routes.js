@@ -13,7 +13,7 @@ import {
   getAllCourses,
   getCourseByCategory,
 } from "../controllers/course.controller.js";
-import { authInstructor, authStudent } from "../middlewares/auth.middleware.js";
+import { authInstructor, authStudent, authUser } from "../middlewares/auth.middleware.js";
 import { courseValidator } from "../middlewares/courseValidator.middleware.js";
 import { upload } from "../services/multer.service.js";
 
@@ -29,7 +29,7 @@ router.post(
 router.get(
   "/:courseId",
   [param("courseId").isMongoId().withMessage("Course Id is required")],
-  authStudent,
+  authUser,
   courseValidator,
   getCourseById
 );

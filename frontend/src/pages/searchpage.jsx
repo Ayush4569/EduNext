@@ -31,6 +31,8 @@ const Searchpage = () => {
     fetchCourses();
   }, [title,category])
 
+  console.log('course', courses);
+  
 
   return (
     <>
@@ -41,7 +43,7 @@ const Searchpage = () => {
      <Categories
       items={categories}
      />
-     <div className='grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 w-full'>
+     <div className='grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 w-full'>
      {
       courses?.map((course)=>{
         return  <CoursesCard key={course._id} course={course} />
