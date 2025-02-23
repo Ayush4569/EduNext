@@ -6,11 +6,7 @@ export const chapterValidator = async (req, res, next) => {
     let courseQuery = { _id: courseId, chapters: chapterId };
     if (req.instructor) {
       courseQuery.author = req.instructor._id;
-    } else if (req.student) {
-      courseQuery.enrolledStudents = req.student._id;
-    } else {
-      return res.status(401).json({ message: "Unauthorized access" });
-    }
+    } 
     const isValidCourseChapter =
       await Course.findOne(courseQuery).populate("chapters");
     if (!isValidCourseChapter) {

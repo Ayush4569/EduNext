@@ -28,7 +28,6 @@ const CourseSideBarRoutes = ({ chapter, course }) => {
         isCompleted && "text-emerald-700 hover:text-emerald-700",
         isCompleted && isActive && "bg-emerald-200/20"
       )}
-      disabled={!isEnrolled && !isFree}
     >
       <div className="flex items-center gap-x-2 py-4">
         {isEnrolled || isFree ? (

@@ -38,7 +38,7 @@ const CoursesCard = ({ course }) => {
               <Label htmlFor="progress" className="font-medium">
                 Course Progress:
               </Label>
-              <div className="w-full flex items-center gap-x-5">
+              <div className="w-full mt-1 flex items-center gap-x-4">
                 <div className="w-full">
                   <div className="w-full bg-gray-200 rounded-sm h-4 overflow-hidden shadow-md">
                     <div
@@ -47,13 +47,11 @@ const CoursesCard = ({ course }) => {
                         width: `${courseProgress}%`,
                       }}
                     >
-                      <span className="sr-only">
-                        {courseProgress}% Complete
-                      </span>
+                     
                     </div>
                   </div>
                 </div>
-                <p className="font-medium text-justify">{courseProgress} %</p>
+                <p className="text-sm text-wrap">{courseProgress}%</p>
               </div>
             </div>
           ) : (
