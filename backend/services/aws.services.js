@@ -1,6 +1,7 @@
 import aws from "aws-sdk";
 import fs from "fs";
-
+import dotenv from "dotenv";
+dotenv.config();
 export class AwsService {
   s3;
   constructor() {

@@ -84,6 +84,7 @@ router.patch(
   chapterValidator,
   toggleChapterPublication
 );
+
 router.delete(
   "/:courseId/:chapterId",
   [

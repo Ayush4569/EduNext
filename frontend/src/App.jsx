@@ -14,6 +14,8 @@ import CourseUpdatePage from "./pages/CourseUpdatePage";
 import ChapterUpdatePage from "./pages/ChapterUpdatePage";
 import ChapterContent from "./pages/ChapterContent";
 import CourseLayout from "./components/CourseLayout";
+import ConfettiComponent from "./components/Confetti";
+import StudentDashboard from "./pages/StudentDashboard";
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -21,6 +23,7 @@ function App() {
     <Routes>
       <Route path="*" element={<ErrorPage />} />
       <Route path="/" element={<Layout />}>
+        <Route index element={<StudentDashboard />} />
         <Route path="/search" element={<Searchpage />} />
         <Route path="/teacher/courses" element={<Teacherpage />} />
         <Route path="/teacher/analytics" element={<Teacheranalytics />} />

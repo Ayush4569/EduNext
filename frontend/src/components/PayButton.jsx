@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "./ui/button";
 import toast from "react-hot-toast";
+import {useStudent} from "@/context/StudentContext"
 const PaymentButton = ({ amount, text,courseId }) => {
   const [loading, setLoading] = useState(false);
   
   const handlePayment = async () => {
+    const {student} = useStudent()
 
     try {
       setLoading(true);
@@ -39,9 +41,9 @@ const PaymentButton = ({ amount, text,courseId }) => {
           }
         },
         prefill: {
-          name: "Ayush",
-          email: "ayush@example.com",
-          contact: "8850296453",
+          name: student?.fullname.firstname,
+          email: student?.email,
+          contact: student?.contact,
         },
         theme: {
           color: "#3399cc",
@@ -57,7 +59,6 @@ const PaymentButton = ({ amount, text,courseId }) => {
     }
   };
 
-  
 
   return (
     <Button onClick={handlePayment} disabled={loading}>

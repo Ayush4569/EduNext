@@ -36,45 +36,48 @@ const getAllCourses = async (req, res) => {
         {
           $addFields: {
             isEnrolled: {
-                  $in: [
-                    new mongoose.Types.ObjectId(req.student?._id),
-                    "$enrolledStudents",
-                  ],
+              $in: [
+                new mongoose.Types.ObjectId(req.student?._id),
+                "$enrolledStudents",
+              ],
             },
             enrolledStudents: {
               $size: "$enrolledStudents",
-            }
+            },
           },
         },
         {
-          $lookup:{
-            from:"courseprogresses",
-            let:{courseId:"$_id"},
-            pipeline:[
+          $lookup: {
+            from: "courseprogresses",
+            let: { courseId: "$_id" },
+            pipeline: [
               {
-                $match:{
-                  $expr:{
-                    $and:[
+                $match: {
+                  $expr: {
+                    $and: [
                       {
-                        eq:["$userId",new mongoose.Types.ObjectId(req.student._id)]
+                        eq: [
+                          "$userId",
+                          new mongoose.Types.ObjectId(req.student._id),
+                        ],
                       },
                       {
-                        eq:["$course","$$courseId"]
-                      }
-                    ]
-                  }
-                }
+                        eq: ["$course", "$$courseId"],
+                      },
+                    ],
+                  },
+                },
               },
               {
-                $project:{
+                $project: {
                   _id: 0,
-                completedChapters: 1,
-                progressPercentage: 1,
-                }
-              }
+                  completedChapters: 1,
+                  progressPercentage: 1,
+                },
+              },
             ],
-            as:"courseProgress"
-          }
+            as: "courseProgress",
+          },
         },
         {
           $project: {
@@ -87,15 +90,15 @@ const getAllCourses = async (req, res) => {
             isEnrolled: 1,
             enrolledStudents: 1,
             chapters: 1,
-            courseProgress:{
-              $cond:{
-                  if:"$isEnrolled",
-                  then:{
-                    $ifNull:[{$arrayElemAt:["$courseProgress",0]},null]
-                  },
-                  else:"$$REMOVE"
-                }
-            }
+            courseProgress: {
+              $cond: {
+                if: "$isEnrolled",
+                then: {
+                  $ifNull: [{ $arrayElemAt: ["$courseProgress", 0] }, null],
+                },
+                else: "$$REMOVE",
+              },
+            },
           },
         },
       ]);
@@ -128,7 +131,9 @@ const getCourseById = async (req, res) => {
     const course = await Course.findOne({
       _id: courseId,
       author: req.instructor,
-    }).populate("chapters").populate("attachments");
+    })
+      .populate("chapters")
+      .populate("attachments");
 
     if (!course) {
       return res.status(404).json({ message: "No such course exists" });
@@ -194,7 +199,7 @@ const getCourseById = async (req, res) => {
             {
               $project: {
                 _id: 0,
-                completedChapters: 1,
+                completedChapter: 1,
                 progressPercentage: 1,
               },
             },

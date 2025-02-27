@@ -1,19 +1,19 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { Lock, PlayCircle } from "lucide-react";
+import { CheckCircle, Lock, PlayCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const CourseSideBarRoutes = ({ chapter, course }) => {
   const { pathname } = useLocation();
   const isActive = pathname.includes(chapter._id);
-  const isCompleted = course.courseProgress?.completedChapters.includes(chapter._id);
+  const isCompleted = course.courseProgress?.completedChapter?.includes(chapter._id)
   const isEnrolled = course.isEnrolled;
   const isFree = chapter.isFree;
   const navigate = useNavigate();
   useEffect(() => {
+    if(pathname.includes('/chapters/')) return ;
     navigate(`/courses/${course._id}/chapters/${course.chapters[0]._id}`);
   }, [course]);
-
   function onClick(chapterId) {
     navigate(`/courses/${course._id}/chapters/${chapterId}`);
   }
@@ -31,13 +31,22 @@ const CourseSideBarRoutes = ({ chapter, course }) => {
     >
       <div className="flex items-center gap-x-2 py-4">
         {isEnrolled || isFree ? (
-          <PlayCircle
+          isEnrolled && isCompleted ? (
+           <CheckCircle className={cn(
+            "h-5 w-5",
+            isActive && "text-slate-500",
+            isCompleted && "text-emerald-700"
+          )}  />
+          ) : (
+            <PlayCircle
             className={cn(
               "h-5 w-5",
               isActive && "text-slate-500",
               isCompleted && "text-emerald-700"
             )}
           />
+          )
+          
         ) : (
           <Lock size={22} className="text-slate-500" />
         )}

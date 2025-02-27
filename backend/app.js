@@ -9,6 +9,7 @@ import courseRoutes from "./routes/course.routes.js";
 import chapterRoutes from "./routes/chapter.routes.js";
 import attachmentsRoutes from "./routes/attachments.routes.js";
 import paymentsRoutes from "./routes/payments.routes.js";
+import courseProgressRoutes from "./routes/course.progress.routes.js";
 import path from "path";
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/chapters", chapterRoutes);
 app.use("/api/v1/attachments", attachmentsRoutes);
 app.use("/api/v1/payments", paymentsRoutes);
+app.use("/api/v1/course-progress", courseProgressRoutes);
 
 // server
 app.listen(4000, () => {

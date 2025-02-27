@@ -1,4 +1,5 @@
 import { Course } from "../models/course.model.js";
+import { CourseProgress } from "../models/course.progress.js";
 import { Payment } from "../models/payments.model.js";
 import { Student } from "../models/student.model.js";
 import {razorpayService} from "../services/razorpay.services.js";
@@ -9,7 +10,6 @@ export const createOrder = async (req, res) => {
     if (!amount) return res.status(400).json({ error: "Amount is required" });
 
     const order = await razorpayService.createOrder(amount, "INR");
-    console.log('order', order);
 
     res.status(200).json(order);
   } catch (error) {
@@ -38,11 +38,14 @@ export const verifyPayment = async (req, res) => {
             enrolledStudents:req.student._id
           }
         })
-        const studentEnrolled =  await Student.findOneAndUpdate({_id:req.student._id},{
+        updatedCourse ? await Student.findOneAndUpdate({_id:req.student._id},{
           $addToSet:{
             enrolledCourses:courseId
           }
         })
+        : null;
+
+        studentEnrolled ? await CourseProgress.create({course:courseId,userId:req.student._id}) : null;
         res.status(200).json({ success: true, message: "Payment successfull" });
       }
     } else {
