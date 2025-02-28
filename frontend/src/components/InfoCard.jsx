@@ -5,7 +5,7 @@ const InfoCard = ({value,label,icon:Icon,className}) => {
     <div className='border rounded-md flex items-center gap-x-2 p-3'>
        <div className="flex items-center gap-x-2">
               <div className={`h-12 w-12 p-3 rounded-full flex items-center justify-center ${className}`}>
-                <Icon className="h-6 w-6 object-cover" />
+               {Icon && <Icon className="h-6 w-6 object-cover" />}
               </div>
             </div>
        <div>

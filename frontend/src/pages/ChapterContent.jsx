@@ -52,7 +52,6 @@ const ChapterContent = () => {
 
   if (!chapter || !course) return null;
 
-  const isLastChapter = chapterId === course.chapters[course.chapters.length - 1]._id;
   const isLocked = !course.isEnrolled && !chapter.isFree;
   const isChapterCompleted = course.courseProgress?.completedChapter?.includes(chapterId);
 
@@ -84,7 +83,7 @@ const ChapterContent = () => {
           setIsConfettiShown(true);
           localStorage.setItem("isConfettiShown", JSON.stringify(true));
         }
-        else{
+        else if(response.data.courseProgress.progressPercentage !== 100){
           localStorage.setItem("isConfettiShown", JSON.stringify(false));
         }
 
