@@ -164,7 +164,7 @@ const uploadChapterVideo = async (req, res) => {
 };
 const getSignedUrl = async (req, res) => {
   try {
-    const signedUrl = await awsService.getSignedUrl(req.params.fileName);
+    const signedUrl = await awsService.generateSignedUrl(req.params.fileName);
     if (!signedUrl) {
       return res.status(500).json({ message: "Error generating signed URL" });
     }

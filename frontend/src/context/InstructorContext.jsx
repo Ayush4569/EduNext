@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { createContext, useContext, useEffect, useState } from "react";
-const InstructorContext = createContext({});
+const InstructorContext = createContext({instructor:null,setInstructor:()=>{}});
 
 export const InstructorContextProvider = ({children})=>{
    

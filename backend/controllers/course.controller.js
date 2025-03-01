@@ -34,6 +34,14 @@ const getAllCourses = async (req, res) => {
           $match: filter,
         },
         {
+          $lookup: {
+            from: "chapters",
+            localField: "chapters",
+            foreignField: "_id",
+            as: "chapters",
+          },
+        },
+        {
           $addFields: {
             isEnrolled: {
               $in: [
@@ -56,13 +64,13 @@ const getAllCourses = async (req, res) => {
                   $expr: {
                     $and: [
                       {
-                        eq: [
+                        $eq: [
                           "$userId",
                           new mongoose.Types.ObjectId(req.student._id),
                         ],
                       },
                       {
-                        eq: ["$course", "$$courseId"],
+                        $eq: ["$course", "$$courseId"],
                       },
                     ],
                   },
@@ -119,6 +127,9 @@ const createCourse = async (req, res) => {
   }
   const { title } = req.body;
   const newCourse = await Course.create({ title, author: req.instructor._id });
+  await req.instructor.updateOne({
+    $push: { courses: newCourse._id },
+  });
   return res.status(200).json(newCourse);
 };
 const getCourseById = async (req, res) => {
@@ -299,7 +310,6 @@ const updateCourseDescription = async (req, res) => {
         .status(404)
         .json({ message: "Course not found or not accessible" });
     }
-    console.log("updatedCourse", updatedCourse);
     return res
       .status(200)
       .json({ message: "course description updated", description });

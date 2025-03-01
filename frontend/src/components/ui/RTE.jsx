@@ -4,7 +4,7 @@ import { Editor } from "@tinymce/tinymce-react";
 export default function RTE({
   onChange,
   value,
-  initialValue = "write your chapter contents here",
+  initialValue,
   setEditorLoading
 }) {
   return (
@@ -44,7 +44,7 @@ export default function RTE({
         content_style:
           "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
       }}
-      initialValue={initialValue}
+      initialValue={initialValue || 'write your chapter content here'}
     />
     </>
     

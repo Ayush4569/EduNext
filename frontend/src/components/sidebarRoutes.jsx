@@ -1,12 +1,10 @@
 import React from 'react'
-import SideBarItem from './sideBarItem'
+import SideBarItem from './SideBarItem'
 import { Layout,Compass, List, BarChart2 } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
 import { useInstructor } from '@/context/InstructorContext'
 import { useStudent } from '@/context/StudentContext'
 
 const SidebarRoutes = () => {
-  const {pathname} = useLocation()
   const {instructor} = useInstructor()
   const {student} = useStudent()
     const studentRoutes = [
@@ -34,7 +32,7 @@ const SidebarRoutes = () => {
         },
     ]
 
-    // const routes = pathname?.startsWith('/teacher') ? teacherRoutes : guestRoutes
+ 
     const routes = instructor ? teacherRoutes : student ? studentRoutes : null
 
   return (

@@ -81,7 +81,7 @@ const PriceForm = ({courseId,coursePrice,setCourse}) => {
                   <Input
                             disabled={isSubmitting}
                             type="number"
-                            placeholder="e.g. $49"
+                            placeholder="e.g. ₹999"
                             {...field}
                           />
                   </FormControl>

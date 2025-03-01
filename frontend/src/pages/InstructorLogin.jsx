@@ -11,9 +11,10 @@ import {
   FormMessage,
 } from "../components/ui/form";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useInstructor } from "@/context/InstructorContext";
+import { useStudent } from "@/context/StudentContext";
 
 function InstructorLogin() {
   const form = useForm({
@@ -24,7 +25,15 @@ function InstructorLogin() {
   });
 
   const navigate = useNavigate()
-  const {setInstructor} = useInstructor()
+  const {instructor,setInstructor} = useInstructor()
+  const {student} = useStudent()
+   
+  if(instructor){
+    return <Navigate to='/teacher/courses' replace/>
+  }
+  if(student){
+    return <Navigate to='/' replace/>
+  }
 
   const onSubmit = async(data) => {
     const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/instructors/login`;
@@ -33,7 +42,7 @@ function InstructorLogin() {
       const response = await axios.post(apiEndpoint,data)
       if(response.statusText === 'OK'){
           setInstructor(response.data)
-          navigate('/')
+          navigate('/teacher/courses')
         toast.success("Login successfull")
       }
      } catch (error) {
@@ -42,13 +51,13 @@ function InstructorLogin() {
      }
   };
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
-       <div className="p-8 w-[32%] mx-auto bg-gray-50 rounded-lg h-auto shadow-xl ">
-      <h1 className="text-3xl font-semibold mb-4 text-center text-red-500">Login</h1>
+    <div className="h-screen w-full md:flex md:gap-x-4 border">
+      <div className="p-10  md:w-1/2 bg-white h-screen flex flex-col justify-center">
+        <h1 className="text-xl md:text-3xl my-4 font-serif font-semibold text-center">Login into your account as teacher</h1>
+        <h1 className="text-xl animate-pulse  transition-all md:text-2xl my-4 font-serif font-semibold text-purple-800 text-center"> Welcome back login with your credentials to start using EduNext</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-          {/* Email Field */}
           <FormField
             control={form.control}
             name="email"
@@ -69,7 +78,9 @@ function InstructorLogin() {
               </FormItem>
             )}
           />
-<FormField
+
+          {/* Password Field */}
+          <FormField
             control={form.control}
             name="password"
             rules={{
@@ -94,16 +105,29 @@ function InstructorLogin() {
               </FormItem>
             )}
           />
-          {/* Submit Button */}
-          <Button type="submit" className="w-full bg-blue-600 text-lg text-white p-6">
+          <div className="md:flex w-full md:justify-between md:items-center">
+          <Button type="submit"
+           className="w-full mb-2 md:mb-0 md:w-max text-lg p-6 hover:bg-yellow-400 hover:text-black transition-all"
+           >
             Login
           </Button>
+          <Button
+           className="w-full md:w-max text-lg p-6 bg-blue-600 text-white"
+          variant="outline"
+          onClick={() => navigate("/login")}
+           >
+            Login as student
+          </Button>
+          </div>
         </form>
       </Form>
-      <div className="mt-6">
-        <Link to='/login' className="text-lg text-red-600">Login as student </Link>
+      <p className="text-center cursor-pointer pb-2 md:pb-0 my-4 md:mt-8 text-lg">
+            Don't have an account? <Link to="/teacher/signup" className="text-blue-600 hover:underline">Signup</Link>
+          </p>
       </div>
-    </div>
+      <div className="hidden md:flex md:items-center md:w-1/2 h-screen  bg-[#f8f8f8] ">
+        <img src='/login.png'alt="logo" />
+      </div>
     </div>
    
   );

@@ -12,7 +12,7 @@ const CourseSideBarRoutes = ({ chapter, course }) => {
   const navigate = useNavigate();
   useEffect(() => {
     if(pathname.includes('/chapters/')) return ;
-    navigate(`/courses/${course._id}/chapters/${course.chapters[0]._id}`);
+    navigate(`/courses/${course._id}/chapters/${course.chapters[0]._id}`,{replace:true});
   }, [course]);
   function onClick(chapterId) {
     navigate(`/courses/${course._id}/chapters/${chapterId}`);

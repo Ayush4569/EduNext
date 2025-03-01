@@ -28,9 +28,6 @@ const CourseUpdatePage = () => {
   const { courseId } = useParams();
   const { instructor } = useInstructor();
   const navigate = useNavigate();
-  if (!instructor) {
-    return <Navigate to="/" />;
-  }
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}`, {

@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import StudentSignup from "./pages/StudentSignup";
 import StudentLogin from "./pages/StudentLogin";
-import Layout from "./components/layout";
+import Layout from "./components/Layout";
 import ErrorPage from "./pages/Errorpage";
 import Searchpage from "./pages/Searchpage";
 import Teacherpage from "./pages/Teacherpage";
@@ -14,37 +14,50 @@ import CourseUpdatePage from "./pages/CourseUpdatePage";
 import ChapterUpdatePage from "./pages/ChapterUpdatePage";
 import ChapterContent from "./pages/ChapterContent";
 import CourseLayout from "./components/CourseLayout";
-import ConfettiComponent from "./components/Confetti";
 import StudentDashboard from "./pages/StudentDashboard";
+import AuthGuard from "./components/AuthGuard";
+import StudentGuard from "./components/StudentGuard";
+import InstructorGuard from "./components/InstructorGuard";
 
 function App() {
   axios.defaults.withCredentials = true;
   return (
     <Routes>
-      <Route path="*" element={<ErrorPage />} />
-      <Route path="/" element={<Layout />}>
-        <Route index element={<StudentDashboard />} />
-        <Route path="/search" element={<Searchpage />} />
-        <Route path="/teacher/courses" element={<Teacherpage />} />
-        <Route path="/teacher/analytics" element={<Teacheranalytics />} />
-        <Route path="/teacher/courses/create" element={<CreateCourses />} />
-        <Route
-          path="/teacher/courses/:courseId"
-          element={<CourseUpdatePage />}
-        />
-        <Route
-          path="/teacher/courses/:courseId/:chapterId/editChapter"
-          element={<ChapterUpdatePage />}
-        />
+      <Route element={<AuthGuard />}>
+        <Route path="/" element={<Layout />}>
+          <Route element={<StudentGuard />}>
+            <Route index element={<StudentDashboard />} />
+            <Route path="/search" element={<Searchpage />} />
+          </Route>
+          <Route element={<InstructorGuard />}>
+            <Route path="/teacher/courses" element={<Teacherpage />} />
+            <Route path="/teacher/analytics" element={<Teacheranalytics />} />
+            <Route path="/teacher/courses/create" element={<CreateCourses />} />
+            <Route
+              path="/teacher/courses/:courseId"
+              element={<CourseUpdatePage />}
+            />
+            <Route
+              path="/teacher/courses/:courseId/:chapterId/editChapter"
+              element={<ChapterUpdatePage />}
+            />
+          </Route>
+        </Route>
+        <Route element={<StudentGuard />}>
+          <Route path="/courses/:courseId" element={<CourseLayout />}>
+            <Route
+              path="/courses/:courseId/chapters/:chapterId"
+              element={<ChapterContent />}
+            />
+          </Route>
+        </Route>
       </Route>
 
       <Route path="/signup" element={<StudentSignup />} />
       <Route path="/login" element={<StudentLogin />} />
       <Route path="/teacher/signup" element={<InstructorSignup />} />
       <Route path="/teacher/login" element={<InstructorLogin />} />
-      <Route path = '/courses/:courseId' element = {<CourseLayout />}>
-        <Route path = '/courses/:courseId/chapters/:chapterId' element = {<ChapterContent />} />
-      </Route>
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }

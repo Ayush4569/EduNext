@@ -4,7 +4,6 @@ import {
   Form,
   FormField,
   FormControl,
-  FormMessage,
   FormItem,
   FormDescription,
 } from "./ui/form";
@@ -22,7 +21,6 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
       isFree: false,
     },
   });
-  const { reset } = form;
   const toggleEdit = () => setIsEditing((current) => !current);
   const submitHandler = async (editedData) => {
     try {

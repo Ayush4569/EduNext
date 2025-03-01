@@ -24,7 +24,7 @@ router.post(
   [body("title").isString().withMessage("Title is required")],
   createChapter
 );
-router.patch("/:courseId/reorder", chapterValidator, reorderChapters);
+router.patch("/:courseId/reorder", reorderChapters);
 router.get(
   "/:courseId/:chapterId",
   [

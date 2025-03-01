@@ -31,7 +31,6 @@ const ChapterTitleForm = ({
         editedData,
         { withCredentials: true }
       );
-      console.log(response);
       if (response.statusText === "OK" || response.status === 200) {
         setChapter((prev) => ({ ...prev, title: response.data.title }));
         toggleEdit();

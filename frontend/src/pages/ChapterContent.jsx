@@ -30,10 +30,14 @@ const ChapterContent = () => {
           { withCredentials: true }
         );
 
-        if (response.status === 200) {
-          setChapter(response.data.chapter);
+        if (response.status === 200 && response.data.chapter && response.data.chapter.isPublished) {
+          setChapter(response.data.chapter)
+         const {data} = await axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${chapterId}/signedUrl/${response.data.chapter.video.fileName}`,
+          { withCredentials: true })
+          data && setChapter((prev) => ({ ...prev, videoUrl: data.signedUrl })) 
         }
       } catch (error) {
+        console.log(error);
         toast.error(error?.response?.data.message || "Error getting chapter");
       } finally {
         setLoading(false);
@@ -139,8 +143,9 @@ const ChapterContent = () => {
             isConfettiShown={isConfettiShown}
             courseId={courseId}
             setCourse={setCourse}
-            videoUrl="/video.mov"
+            videoUrl={chapter.videoUrl}
             isLocked={isLocked}
+            isEnrolled={course.isEnrolled}
           />
         </div>
 
@@ -174,7 +179,7 @@ const ChapterContent = () => {
 
           <div className="p-4 border-b">
             <h2 className="text-lg">Objectives:</h2>
-            {HTMLReactParser(chapter?.content || null)}
+            {HTMLReactParser(chapter?.content || '')}
           </div>
 
           {course?.attachments?.length > 0 && !isLocked && course.isEnrolled && (

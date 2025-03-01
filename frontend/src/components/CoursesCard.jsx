@@ -9,6 +9,7 @@ const CoursesCard = ({ course }) => {
     }).format(price);
   }
   const courseProgress = course?.courseProgress?.progressPercentage || 0;
+  const publishedChapters = course?.chapters?.filter(chapter=>chapter.isPublished);
   return (
     <Link to={`/courses/${course._id}`} className="hover:cursor-pointer">
       <div className="group hover:shadow-md transition overflow-hidden border rounded-lg p-4 h-full">
@@ -28,8 +29,8 @@ const CoursesCard = ({ course }) => {
             <div className="flex items-center gap-x-2 text-slate-500">
               <BookOpen className="h-5 w-5 object-cover" />
               <span>
-                {course.chapters.length}{" "}
-                {course.chapters.length > 1 ? "Chapters" : "Chapter"}
+                {publishedChapters.length}{" "}
+                {publishedChapters.length > 1 ? "Chapters" : "Chapter"}
               </span>
             </div>
           </div>

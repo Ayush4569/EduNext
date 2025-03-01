@@ -25,7 +25,6 @@ const registerInstructor = async (req, res, next) => {
 };
 
 const loginInstructor = async (req, res, next) => {
-  console.log(req.headers, req.cookies);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });

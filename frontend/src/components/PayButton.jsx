@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
 import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 import {useStudent} from "@/context/StudentContext"
 const PaymentButton = ({ amount, text,courseId }) => {
+  const {student} = useStudent()
   const [loading, setLoading] = useState(false);
-  
+  console.log('student', student);
   const handlePayment = async () => {
-    const {student} = useStudent()
+ 
 
     try {
       setLoading(true);

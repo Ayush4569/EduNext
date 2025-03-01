@@ -1,5 +1,4 @@
-import { useStudent } from "../context/StudentContext";
-import NavbarRoutes from "./navbarroutes";
+import NavbarRoutes from "./Navbarroutes";
 import CourseSidebar from "./CourseSidebar";
 import { Loader2, Menu } from "lucide-react";
 import {
@@ -15,8 +14,6 @@ import axios from "axios";
 const CourseLayout = () => {
   const [course, setCourse] = useState({});
   const { courseId } = useParams();
-  const navigate = useNavigate();
-  const { student } = useStudent();
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -35,10 +32,6 @@ const CourseLayout = () => {
     };
     fetchCourse();
   }, [courseId]);
- 
-  if (!student) {
-    navigate("/");
-  }
 
 
   return (
@@ -54,17 +47,23 @@ const CourseLayout = () => {
             </SheetTrigger>
             <SheetContent side="left" className="p-0 bg-white">
               <SheetTitle className="sr-only">Course Sidebar</SheetTitle>
-              <CourseSidebar course={course} courseProgress={course?.courseProgress } />
+              <CourseSidebar
+                course={course}
+                courseProgress={course?.courseProgress}
+              />
             </SheetContent>
           </Sheet>
           <NavbarRoutes />
         </div>
       </div>
       <div className="hidden md:flex h-full w-80 flex-col fixed inset-y-0 z-50">
-        <CourseSidebar course={course} courseProgress={course?.courseProgress } />
+        <CourseSidebar
+          course={course}
+          courseProgress={course?.courseProgress}
+        />
       </div>
       <main className="md:pl-80 pt-20 h-full ">
-        <Outlet context={{course,setCourse}} />
+        <Outlet context={{ course, setCourse }} />
       </main>
     </div>
   );

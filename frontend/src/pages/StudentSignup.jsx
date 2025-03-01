@@ -11,9 +11,10 @@ import {
   FormMessage,
 } from "../components/ui/form";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useStudent } from "@/context/StudentContext";
+import { useInstructor } from "@/context/InstructorContext";
 
 function StudentSignup() {
   const form = useForm({
@@ -29,7 +30,14 @@ function StudentSignup() {
   });
 
   const navigate = useNavigate()
- const {setStudent} = useStudent()
+  const { student,setStudent } = useStudent();
+  const {instructor} = useInstructor()
+  if(instructor){
+    return <Navigate to='/teacher/courses' replace/>
+  }
+  if(student){
+    return <Navigate to='/' replace/>
+  }
  const onSubmit = async (data) => {
 
   try {
@@ -51,9 +59,9 @@ function StudentSignup() {
 };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
-       <div className=" p-8 w-[32%] mx-auto bg-gray-50 rounded-lg h-auto shadow-xl ">
-      <h1 className="text-3xl font-semibold mb-4 text-center text-red-500">Signup</h1>
+    <div className="h-screen w-full md:flex md:gap-x-4 border">
+      <div className="p-10 md:w-1/2 bg-white h-screen flex flex-col">
+        <h1 className="text-3xl my-4 font-serif font-semibold text-center">Create Account As Student</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Username Field */}
@@ -63,7 +71,7 @@ function StudentSignup() {
             rules={{ required: "Firstname is required" }}
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-lg'>Firstname</FormLabel>
+                <FormLabel className='text-lg'>First name</FormLabel>
                 <FormControl>
                   <Input className='p-6 placeholder:text-base' placeholder="Enter your firstname" {...field} />
                 </FormControl>
@@ -77,7 +85,7 @@ function StudentSignup() {
             name="fullname.lastname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-lg'>Lastname</FormLabel>
+                <FormLabel className='text-lg'>Last name</FormLabel>
                 <FormControl>
                   <Input className='p-6 placeholder:text-base' placeholder="Enter your lastname" {...field} />
                 </FormControl>
@@ -159,17 +167,29 @@ function StudentSignup() {
             )}
           />
 
-
-          {/* Submit Button */}
-          <Button type="submit" className="w-full bg-blue-600 text-lg text-white p-6">
+          <div className="md:flex w-full md:justify-between md:items-center">
+          <Button type="submit"
+           className="w-full mb-2 md:mb-0 md:w-max text-lg p-6 hover:bg-yellow-400 hover:text-black transition-all"
+           >
             Register
           </Button>
+          <Button
+           className="w-full md:w-max text-lg p-6 bg-blue-600 text-white"
+          variant="outline"
+          onClick={() => navigate("/teacher/signup")}
+           >
+            Register as teacher
+          </Button>
+          </div>
         </form>
       </Form>
-      <div>
-        <h2 className="text-lg mt-4">Already have an accoun't ? <Link className="text-blue-800 underline" to='/login'>Login</Link></h2>
+      <p className="text-center cursor-pointer pb-2 md:pb-0 my-4 md:mt-8 text-lg">
+            Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+          </p>
       </div>
-    </div>
+      <div className="hidden md:block md:w-1/2 h-screen ">
+        <img src='/Laptop.avif' className="h-full" alt="logo" />
+      </div>
     </div>
    
   );

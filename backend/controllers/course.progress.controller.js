@@ -21,12 +21,13 @@ export const markChapterComplete = async (req, res, next) => {
       return res
         .status(404)
         .json({ message: "Course not found or not purchased" });
-    const { chapters } = await Course.findOne({ _id: courseId });
+    const { chapters } = await Course.findOne({ _id: courseId }).populate('chapters');
+    const publishedChapters = chapters.filter((chapter) => chapter.isPublished);
     if (!chapters || chapters.length === 0)
       return res.status(404).json({ message: "Chapters not found" });
     courseProgress.progressPercentage = calculateProgress(
       courseProgress.completedChapter.length,
-      chapters.length
+      publishedChapters.length
     );
     await courseProgress.save();
     const currentChapterIndex = chapters.findIndex(

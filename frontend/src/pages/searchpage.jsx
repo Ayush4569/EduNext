@@ -30,7 +30,7 @@ const Searchpage = () => {
     };
     fetchCourses();
   }, [title,category])
-
+  const publisedCourses = courses.filter(course=>course.isPublished);
   return (
     <>
     <div className='px-6 pt-6 md:hidden md:mb-0 block'>
@@ -42,7 +42,7 @@ const Searchpage = () => {
      />
      <div className='grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 w-full'>
      {
-      courses?.map((course)=>{
+      publisedCourses?.map((course)=>{
         return  <CoursesCard key={course._id} course={course} />
       })
      }

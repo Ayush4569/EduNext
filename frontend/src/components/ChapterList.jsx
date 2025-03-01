@@ -96,7 +96,7 @@ const ChapterList = ({
                       </Badge>
                       <Pencil
                         onClick={() => onEdit(chapter._id)}
-                        className="w-4 h-4  hover:opacity-75 transition"
+                        className="w-5 h-5  hover:opacity-75 transition"
                       />
                     </div>
                   </div>

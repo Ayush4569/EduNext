@@ -29,11 +29,13 @@ const CourseSidebar = ({course,courseProgress}) => {
     
       <div className="flex flex-col w-full">
         {course?.chapters?.map((chapter) => (
-          <CourseSideBarRoutes
+          chapter.isPublished && (
+            <CourseSideBarRoutes
             key={chapter?._id}
             course={course}
             chapter={chapter}
           />
+          )
         ))}
       </div>
     </div>

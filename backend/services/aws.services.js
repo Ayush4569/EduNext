@@ -1,11 +1,13 @@
-import aws from "aws-sdk";
+import {S3Client,PutObjectCommand,GetObjectCommand, DeleteObjectCommand} from 
+"@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 export class AwsService {
   s3;
   constructor() {
-    this.s3 = new aws.S3({
+    this.s3 = new S3Client({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       region: "eu-north-1",
@@ -15,18 +17,17 @@ export class AwsService {
   async uploadFile(fileName, filePath, fileType) {
     const fileContent = fs.createReadStream(filePath);
     try {
-      const uploadedLink = await this.s3
-        .upload({
+      const uploadedLink = new PutObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
           Key: `videos/${fileName}`,
           Body: fileContent,
           ContentType: fileType,
           ACL: "private",
         })
-        .promise();
-      if (uploadedLink) {
+      const response = await this.s3.send(uploadedLink);
+      if (response) {
         await fs.promises.unlink(filePath);
-        return uploadedLink;
+        return response;
       }
     } catch (error) {
       console.log("Error uploading file to S3:", error);
@@ -36,26 +37,25 @@ export class AwsService {
 
   async deleteFile(fileName) {
     try {
-      await this.s3
-        .deleteObject({
+     const command =  new DeleteObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
           Key: `videos/${fileName}`,
         })
-        .promise();
+      await this.s3.send(command);
     } catch (error) {
       console.error("Error deleting file from S3:", error);
       throw new Error("Failed to delete file from S3");
     }
   }
 
-  async getSignedUrl(fileName) {
+  async generateSignedUrl(fileName) {
     try {
-      const signedUrl = await this.s3.getSignedUrl("getObject", {
+      const getObjectParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: `videos/${fileName}`,
-        Expires: 3600,
-      });
-      return signedUrl;
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      return await getSignedUrl(this.s3,command,{expiresIn: 600});
     } catch (error) {
       console.error("Error generating signed URL:", error);
       throw new Error("Failed to generate signed URL");

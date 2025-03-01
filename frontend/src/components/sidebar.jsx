@@ -1,6 +1,6 @@
 import React from 'react'
 import Logo from './ui/logo'
-import SidebarRoutes from './sidebarRoutes'
+import SidebarRoutes from './SidebarRoutes'
 
 const Sidebar = () => {
   return (

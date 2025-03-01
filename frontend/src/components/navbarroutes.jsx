@@ -57,7 +57,7 @@ const NavbarRoutes = () => {
         )}
         <div>
           <img className="md:h-11 md:w-11 h-8 w-8" src={
-            student?`http://localhost:4000/public${student?.profileImage}`:`http://localhost:4000/public${instructor?.profileImage}`
+            student?`${import.meta.env.VITE_BASEURL}/public${student?.profileImage}`:`${import.meta.env.VITE_BASEURL}/public${instructor?.profileImage}`
           } />
         </div>
       </div>

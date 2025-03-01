@@ -79,7 +79,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
                 courseAttachments.map((attachment)=>(
                    <div key={attachment._id} className='flex items-center p-3 w-full bg-sky-100 border-sky-200 border overflow-scroll text-sky-700 rounded-md mt-2'>
                     <File className='h-4 w-4 mr-2 flex-shrink-0'/>
-                    <p onClick={()=>{window.open(attachment.attachment,"_blank")}} className='text-xs line-clamp-1 cursor-pointer'>{attachment.attachmentName}</p>
+                    <p onClick={()=>{window.open(attachment.attachment,"_blank")}} className='text-lg line-clamp-1 cursor-pointer'>{attachment.attachmentName}</p>
                      <button onClick={()=>deleteAttachment(attachment._id)} className='ml-auto hover:opacity-75 transition'>
                      <X className='h-4 w-4 ml-4'/>
                      </button>
@@ -93,7 +93,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
       <div className="mt-3">
         {loading ? (
          <div className="h-60 flex items-center justify-center">
-          <Loader2 height={120} width={120}/>
+          <Loader2 className="h-14 w-14 animate-spin text-cyan-700"/>
          </div>
         ):
         (
