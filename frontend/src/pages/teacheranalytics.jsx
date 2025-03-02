@@ -36,8 +36,6 @@ const Teacheranalytics = () => {
     (course) => course.isPublished && course.enrolledStudents.length>0
   );  
   const generatedRevenue = publishedAndSoldCourses.reduce((acc,curr)=> acc = acc+(curr.price*curr.enrolledStudents.length),0)
-  console.log('publishedAndSoldCourses',publishedAndSoldCourses);
-  console.log('generatedRevenue',generatedRevenue);
 
   if(loading){
     <div className="h-screen w-screen flex items-center justify-center">

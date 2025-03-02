@@ -1,13 +1,13 @@
 import NavbarRoutes from "./Navbarroutes";
 import CourseSidebar from "./CourseSidebar";
-import { Loader2, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import {
   SheetContent,
   SheetTrigger,
   Sheet,
   SheetTitle,
 } from "../components/ui/sheet";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -53,7 +53,7 @@ const CourseLayout = () => {
               />
             </SheetContent>
           </Sheet>
-          <NavbarRoutes />
+          <NavbarRoutes isCourseLayout />
         </div>
       </div>
       <div className="hidden md:flex h-full w-80 flex-col fixed inset-y-0 z-50">

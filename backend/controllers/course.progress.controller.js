@@ -21,7 +21,9 @@ export const markChapterComplete = async (req, res, next) => {
       return res
         .status(404)
         .json({ message: "Course not found or not purchased" });
-    const { chapters } = await Course.findOne({ _id: courseId }).populate('chapters');
+    const { chapters } = await Course.findOne({ _id: courseId }).populate(
+      "chapters"
+    );
     const publishedChapters = chapters.filter((chapter) => chapter.isPublished);
     if (!chapters || chapters.length === 0)
       return res.status(404).json({ message: "Chapters not found" });
@@ -31,17 +33,18 @@ export const markChapterComplete = async (req, res, next) => {
     );
     await courseProgress.save();
     const currentChapterIndex = chapters.findIndex(
-      (chapter) => chapter.toString() === chapterId
+      (chapter) => chapter._id.toString() === chapterId
     );
     const nextChapter =
-      currentChapterIndex !== -1 && currentChapterIndex < chapters.length - 1
-        ? chapters[currentChapterIndex + 1]
+      currentChapterIndex !== -1 &&
+      currentChapterIndex < publishedChapters.length - 1
+        ? publishedChapters[currentChapterIndex + 1]
         : null;
 
     return res.status(200).json({
       message: "Chapter completed",
       courseProgress,
-      nextChapter: nextChapter?.toString(),
+      nextChapter: nextChapter?._id,
     });
   } catch (error) {
     return next(error);
@@ -63,14 +66,17 @@ export const markChapterIncomplete = async (req, res, next) => {
       return res
         .status(404)
         .json({ message: "Course not found or not purchased" });
-    const { chapters } = await Course.findOne({ _id: courseId });
+    const { chapters } = await Course.findOne({ _id: courseId }).populate(
+      "chapters"
+    );
+    const publishedChapters = chapters.filter((chapter) => chapter.isPublished);
     if (!chapters || chapters.length === 0)
       return res.status(404).json({ message: "Chapters not found" });
     courseProgress.progressPercentage = calculateProgress(
       courseProgress.completedChapter.length,
-      chapters.length
+      publishedChapters.length
     );
-    await courseProgress.save()
+    await courseProgress.save();
     return res.status(200).json({
       message: "Chapter marked as incomplete",
       courseProgress,

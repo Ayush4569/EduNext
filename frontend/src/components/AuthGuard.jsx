@@ -14,7 +14,7 @@ const AuthGuard = ()=>{
         );
     }
     if (!student && !instructor) {
-        return <Navigate to="/signup" />;
+        return <Navigate to="/login" replace />;
     }
     return <Outlet />;
 }

@@ -15,6 +15,7 @@ dotenv.config();
 
 connectDB();
 const app = express();
+const port = process.env.PORT || 4000;
 // middlewares
 app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
@@ -36,6 +37,6 @@ app.use("/api/v1/payments", paymentsRoutes);
 app.use("/api/v1/course-progress", courseProgressRoutes);
 
 // server
-app.listen(4000, () => {
-  console.log("server running on port 4000");
+app.listen(port, () => {
+  console.log(`server running on port ${port}`);
 });
