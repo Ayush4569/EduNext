@@ -6,7 +6,6 @@ import {useStudent} from "@/context/StudentContext"
 const PaymentButton = ({ amount, text,courseId }) => {
   const {student} = useStudent()
   const [loading, setLoading] = useState(false);
-  console.log('student', student);
   const handlePayment = async () => {
  
 

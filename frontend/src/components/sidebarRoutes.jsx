@@ -11,7 +11,7 @@ const SidebarRoutes = () => {
         {
             icon:Layout,
             href:"/",
-            label:"Dashboard"
+            label:"My Courses"
         },
         {
             icon:Compass,

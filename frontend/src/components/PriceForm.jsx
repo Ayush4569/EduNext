@@ -64,7 +64,7 @@ const PriceForm = ({courseId,coursePrice,setCourse}) => {
         {
             coursePrice ? (
                 convertToInr(coursePrice)
-            ) : "No price"
+            ) : "Free"
         }
       </p>
     ) : (

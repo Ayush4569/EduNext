@@ -57,7 +57,6 @@ router.patch(
 );
 router.patch(
   "/:courseId/editPrice",
-  [body("price").isString().withMessage("Title is required")],
   authInstructor,
   courseValidator,
   updateCoursePrice

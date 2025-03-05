@@ -56,7 +56,7 @@ const CoursesCard = ({ course }) => {
               </div>
             </div>
           ) : (
-            <p className="mt-6">{formatPrice(course.price)}</p>
+            <p className="mt-6">{course.price>0 ? formatPrice(course.price) : "Free Course"}</p>
           )}
         </div>
       </div>

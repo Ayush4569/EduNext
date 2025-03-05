@@ -7,7 +7,7 @@ import { razorpayService } from "../services/razorpay.services.js";
 export const createOrder = async (req, res) => {
   try {
     const { amount } = req.body;
-    if (!amount) return res.status(400).json({ error: "Amount is required" });
+    if (!amount) return res.status(400).json({ error: "Valid Amount is required" });
 
     const order = await razorpayService.createOrder(amount, "INR");
 

@@ -1,10 +1,8 @@
 import { validationResult } from "express-validator";
 import { Course } from "../models/course.model.js";
-import {
-  deleteFromCloudinary,
-  uploadToCloudinary,
-} from "../services/cloudinary.services.js";
+import { uploadToCloudinary,deleteFromCloudinary } from "../services/cloudinary.services.js";
 import mongoose from "mongoose";
+import awsService from "../services/aws.services.js";
 
 const getAllCourses = async (req, res) => {
   if (req?.instructor) {
@@ -15,7 +13,6 @@ const getAllCourses = async (req, res) => {
       }
       return res.status(200).json({ courses });
     } catch (error) {
-      console.log("Error fetching courses", error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   }
@@ -333,14 +330,16 @@ const updateCourseImage = async (req, res) => {
     return res.status(400).json({ message: "upload an image" });
   }
   try {
+    const course = await Course.findOne({_id:courseId,author:req.instructor._id});
+    if(course.coverImage){
+      await deleteFromCloudinary(course.coverImage.split("/").pop().split(".")[0]);
+    }
     const uploadedPhotoUrl = await uploadToCloudinary(coverImage.path);
     if (!uploadedPhotoUrl) {
       return res.status(400).json({ message: "falied to upload image" });
     }
-    await Course.findOneAndUpdate(
-      { _id: courseId, author: req.instructor },
-      { coverImage: uploadedPhotoUrl }
-    );
+    course.coverImage = uploadedPhotoUrl;
+    await course.save();
     return res
       .status(200)
       .json({ message: "course image uploaded", url: uploadedPhotoUrl });
@@ -381,9 +380,9 @@ const updateCourseCategory = async (req, res) => {
 const updateCoursePrice = async (req, res) => {
   const { price } = req.body;
   const { courseId } = req.params;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ message: errors.array() });
+
+  if (price === undefined || price < 0) {
+    return res.status(400).json({ message: "Invalid price" });
   }
   try {
     const updatedCourse = await Course.findOneAndUpdate(
@@ -442,6 +441,24 @@ const toggleCoursePublication = async (req, res) => {
 const deleteCourse = async (req, res) => {
   const { courseId } = req.params;
   try {
+    const course = await Course.findOne({
+      _id: courseId,
+      author: req.instructor,
+    }).populate("chapters");
+
+    const deletedCourseVideos = await Promise.all(
+      course.chapters.map(async (chapter) => {
+        if (chapter.video?.fileName) {
+          return  awsService.deleteFile(chapter.video.fileName);
+        }
+        return Promise.resolve();
+      })
+    ).catch((error) => {
+      throw new Error("Failed to delete course videos");
+    });
+
+    const deleteCourseImage = await deleteFromCloudinary(course.coverImage?.split("/").pop().split(".")[0]);
+
     const deletedCourse = await Course.findOneAndDelete({
       _id: courseId,
       author: req.instructor,
@@ -449,6 +466,7 @@ const deleteCourse = async (req, res) => {
     if (!deletedCourse) {
       return res.status(404).json({ message: "Course not found" });
     }
+
     return res.status(200).json({ message: "Course deleted" });
   } catch (error) {
     console.error("Error deleting course :", error);

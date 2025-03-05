@@ -50,7 +50,6 @@ const CourseUpdatePage = () => {
     course?.title,
     course?.description,
     course?.coverImage,
-    course?.price,
     course?.category,
     course?.chapters?.some((chapter) => chapter.isPublished === true),
   ];
