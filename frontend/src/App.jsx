@@ -26,7 +26,7 @@ function App() {
       <Route element={<AuthGuard />}>
         <Route path="/" element={<Layout />}>
           <Route element={<StudentGuard />}>
-            <Route index element={<StudentDashboard />} />
+            <Route path="/dashboard" element={<StudentDashboard />} />
             <Route path="/search" element={<Searchpage />} />
           </Route>
           <Route element={<InstructorGuard />}>

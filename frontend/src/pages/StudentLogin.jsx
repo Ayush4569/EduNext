@@ -31,11 +31,9 @@ function StudentLogin() {
     return <Navigate to='/teacher/courses' replace/>
   }
   if(student){
-    return <Navigate to='/' replace/>
+    return <Navigate to='/dashboard' replace/>
   }
 
-   
-  
 
   const onSubmit = async (data) => {
     const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/students/login`;
@@ -43,7 +41,7 @@ function StudentLogin() {
       const response = await axios.post(apiEndpoint, data);
       if (response.statusText === "OK") {
         setStudent(response.data);
-        navigate("/");
+        navigate("/dashboard");
         toast.success("Login successfull");
       }
     } catch (error) {

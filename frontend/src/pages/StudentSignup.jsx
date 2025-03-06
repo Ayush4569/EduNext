@@ -36,7 +36,7 @@ function StudentSignup() {
     return <Navigate to='/teacher/courses' replace/>
   }
   if(student){
-    return <Navigate to='/' replace/>
+    return <Navigate to='/dashboard' replace/>
   }
  const onSubmit = async (data) => {
 

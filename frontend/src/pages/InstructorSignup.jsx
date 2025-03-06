@@ -35,7 +35,7 @@ function InstructorSignup() {
     return <Navigate to='/teacher/courses' replace/>
   }
   if(student){
-    return <Navigate to='/' replace/>
+    return <Navigate to='/dashboard' replace/>
   }
 
   const navigate = useNavigate();
