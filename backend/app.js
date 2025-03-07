@@ -20,7 +20,7 @@ const port = process.env.PORT || 8000;
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://edunext-frontend.vercel.app"],
+    origin: ["https://edunext-frontend.vercel.app","http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
