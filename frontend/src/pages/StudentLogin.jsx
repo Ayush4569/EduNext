@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -30,10 +30,11 @@ function StudentLogin() {
   if(instructor){
     return <Navigate to='/teacher/courses' replace/>
   }
-  if(student){
-    return <Navigate to='/dashboard' replace/>
-  }
-
+  useEffect(() => {
+    if (student) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [student, navigate]);
 
   const onSubmit = async (data) => {
     const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/students/login`;
@@ -42,7 +43,7 @@ function StudentLogin() {
       console.log("login response", response);
       if (response.status === 200) {
         setStudent(response.data);
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
         toast.success("Login successfull");
       }
     } catch (error) {

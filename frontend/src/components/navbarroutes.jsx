@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate
-} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -12,7 +8,7 @@ import { useStudent } from "@/context/StudentContext";
 import { useInstructor } from "@/context/InstructorContext";
 
 import SearchInput from "./SearchInput";
-const NavbarRoutes = ({isCourseLayout = false}) => {
+const NavbarRoutes = ({ isCourseLayout = false }) => {
   const { pathname } = useLocation();
   const { instructor, setInstructor } = useInstructor();
   const { student, setStudent } = useStudent();
@@ -33,6 +29,13 @@ const NavbarRoutes = ({isCourseLayout = false}) => {
       console.log("logout error", error);
     }
   };
+  const exit = ()=>{
+    if(student){
+      navigate("/dashboard")
+    }else{
+      navigate("/teacher/courses")
+  }
+}
   return (
     <>
       {searchPage && (
@@ -43,19 +46,20 @@ const NavbarRoutes = ({isCourseLayout = false}) => {
       <div className="flex md:gap-x-4 gap-x-2 justify-end items-center ml-auto">
         {(instructor || student) && (
           <>
-            {
-              !isCourseLayout ? (
-                <Button variant="outline" onClick={logOut}>
-              <LogOut className="h-4 w-4 md:mr-2" />
-              Logout
-            </Button>
-              ):(
-                <Button variant="outline" onClick={()=> navigate('/')}>
-              <LogOut className="h-4 w-4 md:mr-2" />
-              Exit
-            </Button>
-              )
-            }
+            {!isCourseLayout ? (
+              <Button variant="outline" onClick={logOut}>
+                <LogOut className="h-4 w-4 md:mr-2" />
+                Logout
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={exit}
+              >
+                <LogOut className="h-4 w-4 md:mr-2" />
+                Exit
+              </Button>
+            )}
             <Button variant="ghost">
               <p className="md:text-base text-xs">
                 {instructor ? instructor?.email : student?.email}

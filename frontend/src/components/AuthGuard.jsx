@@ -13,7 +13,7 @@ const AuthGuard = ()=>{
         </div>
         );
     }
-    if (!student || !instructor) {
+    if (!student && !instructor) {
         return <Navigate to="/login" replace />;
     }
     return <Outlet />;

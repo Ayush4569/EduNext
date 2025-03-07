@@ -28,7 +28,6 @@ const PaymentButton = ({ amount, text,courseId }) => {
         description: "Course Purchase",
         order_id: response.data.id,
         handler: async function (res) {
-          console.log('response', res);
           const verifyRes = await axios.post(
             `${import.meta.env.VITE_BASEURL}/api/v1/payments/verify-payment`,
             {...res,courseId}
