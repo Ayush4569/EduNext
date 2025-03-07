@@ -39,7 +39,8 @@ function StudentLogin() {
     const apiEndpoint = `${import.meta.env.VITE_BASEURL}/api/v1/students/login`;
     try {
       const response = await axios.post(apiEndpoint, data);
-      if (response.statusText === "OK") {
+      console.log("login response", response);
+      if (response.status === 200) {
         setStudent(response.data);
         navigate("/dashboard");
         toast.success("Login successfull");

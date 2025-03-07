@@ -33,7 +33,7 @@ const ChapterList = ({
         }
       );
 
-      if (response.statusText === "OK" || response.status === 200) {
+      if ( response.status === 200) {
         setCourse((prev) => ({
           ...prev,
           chapters: response.data.reorderedChapters,

@@ -25,7 +25,7 @@ const ImageForm = ({ courseId, courseImage,setCourse }) => {
           headers: { "Content-type": "multipart/form-data" },
         }
       );
-      if (response.statusText === "OK" || response.status === 200) {
+      if ( response.status === 200) {
        setCourse((prev)=>({...prev,coverImage:response.data.url}))
         toggleEdit();
         toast.success(response?.data?.message || "course image updated");

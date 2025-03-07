@@ -28,7 +28,7 @@ const ChapterForm = ({ courseChapters, courseId, setCourse }) => {
         editedData,
         { withCredentials: true }
       );
-      if (response.statusText === "OK" || response.status === 200) {
+      if ( response.status === 200) {
         setCourse((prev) => ({ ...prev, chapters: response.data.chapter }));
         toggleEdit();
         reset();

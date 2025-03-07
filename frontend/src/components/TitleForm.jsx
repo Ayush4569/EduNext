@@ -23,7 +23,7 @@ const TitleForm = ({ courseTitle, courseId, setCourse }) => {
         editedData,
         { withCredentials: true }
       );
-      if (response.statusText === "OK" || response.status === 200) {
+      if ( response.status === 200) {
         setCourse((prev) => ({ ...prev, title: response.data.title }));
         toggleEdit();
         reset();

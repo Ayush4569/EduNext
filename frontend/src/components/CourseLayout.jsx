@@ -23,7 +23,7 @@ const CourseLayout = () => {
             withCredentials: true,
           }
         );
-        if (response.statusText === "OK" && response.data.course) {
+        if ( response.data.course) {
           setCourse(response.data.course);
         }
       } catch (error) {

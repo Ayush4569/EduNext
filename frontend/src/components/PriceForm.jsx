@@ -30,7 +30,7 @@ const PriceForm = ({courseId,coursePrice,setCourse}) => {
       const submitHandler = async(editedData) => {
         try {
             const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}/editPrice`,editedData,{withCredentials:true})
-            if(response.statusText === "OK" || response.status === 200){
+            if( response.status === 200){
               setCourse((prev)=>({...prev,price:response.data.price}))
                 toggleEdit()
                 reset()

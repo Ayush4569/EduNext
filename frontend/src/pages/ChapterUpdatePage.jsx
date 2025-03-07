@@ -26,7 +26,7 @@ const ChapterUpdatePage = () => {
             withCredentials: true,
           }
         );
-        if (response.status === 200 && response.statusText === "OK") {
+        if (response.status === 200) {
           setChapter(response.data.chapter);
           if(!response.data.chapter){
             navigate(`/teacher/courses/${courseId}`)

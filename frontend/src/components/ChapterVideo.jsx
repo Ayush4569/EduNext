@@ -28,7 +28,7 @@ const ChapterVideo = ({  chapterId, chapterVideo,courseId,setChapter }) => {
           }
         }
       )
-      if(response.status === 200 && response.statusText === "OK"){
+      if(response.status === 200){
         setChapter((chapter)=>({...chapter,video:response.data.video}))
         toast.success("Video uploaded successfully")
       }

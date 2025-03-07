@@ -26,7 +26,7 @@ const DescriptionForm = ({courseDescription,courseId,setCourse}) => {
       const submitHandler = async(editedData) => {
         try {
             const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}/editDescription`,editedData,{withCredentials:true})
-            if(response.statusText === "OK" || response.status === 200){
+            if( response.status === 200){
               setCourse((prev)=>({...prev,description:response.data.description}))
                 toggleEdit()
                 reset()

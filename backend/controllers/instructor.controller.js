@@ -40,7 +40,12 @@ const loginInstructor = async (req, res, next) => {
   }
 
   const token = instructor.generateAuthToken();
-  res.cookie("token", token);
+  res.cookie("token", token,{
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
+
   return res.status(200).json(instructor);
 };
 const instructorProfile = async (req, res, next) => {
@@ -48,7 +53,12 @@ const instructorProfile = async (req, res, next) => {
 };
 const logoutInstructor = async (req, res, next) => {
   const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true, 
+    sameSite: "None", 
+});
+
   return res.status(200).json({ message: "Logged out" });
 };
 export {

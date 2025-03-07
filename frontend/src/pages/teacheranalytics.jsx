@@ -20,7 +20,7 @@ const Teacheranalytics = () => {
             withCredentials: true,
           }
         );
-        if (response.statusText === "OK" && response.data.courses) {
+        if (response.data.courses) {
           setCourses(response.data.courses);
         }
       } catch (TeacheranalyticsError) {

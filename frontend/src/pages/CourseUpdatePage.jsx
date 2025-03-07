@@ -59,7 +59,7 @@ const CourseUpdatePage = () => {
   const handleCoursePublish = async()=>{
     try {
       const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}/editPublication`,{},{withCredentials:true});
-      if(response.statusText === 'OK' && response.status === 200){
+      if( response.status === 200){
        setCourse((course)=>({...course,isPublished:response.data.isPublished}))
          toast.success(response.data.message) 
       }
@@ -71,7 +71,7 @@ const CourseUpdatePage = () => {
   const handleCourseDelete = async()=>{
     try {
       const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/api/v1/courses/${courseId}`,{withCredentials:true})
-      if(response.statusText === 'OK' && response.status === 200){
+      if( response.status === 200){
         toast.success(response.data.message) 
         navigate(`/teacher/courses/create`)
      }

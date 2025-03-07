@@ -24,7 +24,7 @@ const NavbarRoutes = ({isCourseLayout = false}) => {
       : `${import.meta.env.VITE_BASEURL}/api/v1/students/logout`;
     try {
       const response = await axios.get(apiEndpoint);
-      if (response.statusText === "OK") {
+      if (response.status === 200) {
         instructor ? setInstructor(null) : setStudent(null);
         instructor ? navigate("/teacher/login") : navigate("/login");
         toast.success(response.data.message);

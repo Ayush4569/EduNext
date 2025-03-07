@@ -33,7 +33,7 @@ const ChapterDescriptionForm = ({
         editedData,
         { withCredentials: true }
       );
-      if (response.statusText === "OK" || response.status === 200) {
+      if ( response.status === 200) {
         setChapter((prev) => ({
           ...prev,
           content: response.data.content,

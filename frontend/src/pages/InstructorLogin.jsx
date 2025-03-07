@@ -40,7 +40,7 @@ function InstructorLogin() {
     try {
 
       const response = await axios.post(apiEndpoint,data)
-      if(response.statusText === 'OK'){
+      if(response.status === 200){
           setInstructor(response.data)
           navigate('/teacher/courses')
         toast.success("Login successfull")

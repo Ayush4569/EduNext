@@ -31,7 +31,7 @@ const ChapterAccess = ({ courseId, setChapter, chapterId, isChapterFree }) => {
         editedData,
         { withCredentials: true }
       );
-      if (response.statusText === "OK" || response.status === 200) {
+      if (response.status === 200) {
         setChapter((chapter) => ({ ...chapter, isFree: response.data.isFree }));
         toggleEdit();
         // reset();

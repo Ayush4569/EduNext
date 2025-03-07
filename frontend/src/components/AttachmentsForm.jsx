@@ -29,7 +29,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
           headers: { "Content-type": "multipart/form-data" },
         }
       );
-      if (response.statusText === "OK" || response.status === 200) {
+      if (response.status === 200) {
        setCourse((prev)=>({...prev,attachments:response.data.attachments}))
         toggleEdit();
         toast.success(response?.data?.message);
@@ -45,7 +45,7 @@ const AttachmentsForm = ({courseId,courseAttachments,setCourse}) => {
       const deleteAttachment = async(attachmentId)=>{
        try {
         const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/api/v1/attachments/${courseId}/${attachmentId}`,{withCredentials:true})
-        if(response.statusText === 'OK' && response.status === 200){
+        if(response.status === 200){
           setCourse((prev)=>({...prev,attachments:response.data.attachments}))
           toast.success(response.data.message || 'Attachment removed')
         }

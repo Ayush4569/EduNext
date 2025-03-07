@@ -10,7 +10,7 @@ const SidebarRoutes = () => {
     const studentRoutes = [
         {
             icon:Layout,
-            href:"/",
+            href:"/dashboard",
             label:"My Courses"
         },
         {
