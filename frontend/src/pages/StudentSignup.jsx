@@ -44,9 +44,7 @@ function StudentSignup() {
     const response = await axios.post(`${import.meta.env.VITE_BASEURL}/api/v1/students/register`, data);
 
     if (response.status === 201) {
-        setStudent(response.data);
         navigate("/login");
-
       toast.success("User registered successfully");
     }
   } catch (error) {
