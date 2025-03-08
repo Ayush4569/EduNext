@@ -134,7 +134,7 @@ const uploadChapterVideo = async (req, res) => {
     const uploadedVideo = req.file;
     const uploadedLink = await awsService.uploadFile(
       uploadedVideo.originalname,
-      uploadedVideo.path,
+      uploadedVideo.buffer,
       uploadedVideo.mimetype
     );
     if (!uploadedLink) {

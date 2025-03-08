@@ -48,7 +48,7 @@ const ChapterVideo = ({  chapterId, chapterVideo,courseId,setChapter }) => {
         const response = await axios.get(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${chapterId}/signedUrl/${chapterVideo.fileName}`,{
           withCredentials:true
         })
-        if(response.status === 200 && response.statusText === "OK"){
+        if(response.status === 200){
           setSignedUrl(response.data.signedUrl)
         }
       } catch (error) {

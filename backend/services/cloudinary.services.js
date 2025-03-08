@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 cloudinary.config({
@@ -8,18 +7,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadToCloudinary = async (localPath) => {
-  try {
-    if (!localPath) return new Error("Asset local path is required");
-    const response = await cloudinary.uploader.upload(localPath, {
-      resource_type: "auto",
-    });
-    await fs.promises.unlink(localPath);
-    return response.url;
-  } catch (error) {
-    await fs.promises.unlink(localPath);
-    console.log(error);
-  }
+export const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: "auto" },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary Upload Error:", error);
+          return reject(error);
+        }
+        return resolve(result.secure_url);
+      }
+    );
+
+    uploadStream.end(fileBuffer);
+  });
 };
 
 export const deleteFromCloudinary = async (publicId) => {

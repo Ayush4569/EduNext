@@ -319,9 +319,8 @@ const updateCourseDescription = async (req, res) => {
 };
 
 const updateCourseImage = async (req, res) => {
-  1;
   const { courseId } = req.params;
-  const coverImage = req.file;
+  const coverImage = req.file.buffer;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ message: errors.array() });
@@ -334,7 +333,7 @@ const updateCourseImage = async (req, res) => {
     if(course.coverImage){
       await deleteFromCloudinary(course.coverImage.split("/").pop().split(".")[0]);
     }
-    const uploadedPhotoUrl = await uploadToCloudinary(coverImage.path);
+    const uploadedPhotoUrl = await uploadToCloudinary(coverImage);
     if (!uploadedPhotoUrl) {
       return res.status(400).json({ message: "falied to upload image" });
     }

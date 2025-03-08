@@ -1,7 +1,6 @@
 import {S3Client,PutObjectCommand,GetObjectCommand, DeleteObjectCommand} from 
 "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
 export class AwsService {
@@ -14,24 +13,21 @@ export class AwsService {
       signatureVersion: "v4",
     });
   }
-  async uploadFile(fileName, filePath, fileType) {
-    const fileContent = fs.createReadStream(filePath);
+  async uploadFile(fileName, fileBuffer, fileType) {
     try {
       const uploadedLink = new PutObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
           Key: `videos/${fileName}`,
-          Body: fileContent,
+          Body: fileBuffer,
           ContentType: fileType,
           ACL: "private",
         })
       const response = await this.s3.send(uploadedLink);
       if (response) {
-        await fs.promises.unlink(filePath);
         return response;
       }
     } catch (error) {
       console.log("Error uploading file to S3:", error);
-      await fs.promises.unlink(filePath);
     }
   }
 
