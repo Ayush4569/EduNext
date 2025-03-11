@@ -47,7 +47,7 @@ const ChapterUpdatePage = () => {
   const handleChapterPublish = async()=> {
     try {
       const response = await axios.patch(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${chapterId}/editPublication`,{},{withCredentials:true});
-      if(response.statusText === 'OK' && response.status === 200){
+      if(response.status === 200){
        setChapter((chapter)=>({...chapter,isPublished:response.data.isPublished}))
          toast.success(response.data.message) 
       }
@@ -59,7 +59,7 @@ const ChapterUpdatePage = () => {
   const handleChapterDelete = async()=>{
     try {
       const response = await axios.delete(`${import.meta.env.VITE_BASEURL}/api/v1/chapters/${courseId}/${chapterId}`,{withCredentials:true});
-      if(response.statusText === 'OK' && response.status === 200){
+      if(response.status === 200){
          toast.success(response.data.message) 
          navigate(`/teacher/courses/${courseId}`)
       }

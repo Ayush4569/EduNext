@@ -145,7 +145,7 @@ const uploadChapterVideo = async (req, res) => {
       {
         video: {
           fileName: uploadedVideo.originalname,
-          fileUrl: uploadedLink.Location,
+          fileUrl: uploadedLink.fileUrl,
           format: uploadedVideo.mimetype,
         },
       },

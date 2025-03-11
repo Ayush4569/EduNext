@@ -42,7 +42,7 @@ const loginInstructor = async (req, res, next) => {
   const token = instructor.generateAuthToken();
   res.cookie("token", token,{
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "None",
   });
 

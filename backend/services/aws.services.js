@@ -24,7 +24,9 @@ export class AwsService {
         })
       const response = await this.s3.send(uploadedLink);
       if (response) {
-        return response;
+        const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/videos/${fileName}`;
+        
+        return { fileUrl, response };
       }
     } catch (error) {
       console.log("Error uploading file to S3:", error);
