@@ -11,8 +11,9 @@ export const createOrder = async (req, res) => {
 
     const order = await razorpayService.createOrder(amount, "INR");
 
-    res.status(200).json(order);
+    return res.status(200).json(order);
   } catch (error) {
+    console.log('error in create order:', error);
     res.status(500).json({ error: error.message });
   }
 };
